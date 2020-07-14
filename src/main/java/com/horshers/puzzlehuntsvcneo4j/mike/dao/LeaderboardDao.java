@@ -14,17 +14,12 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class LeaderboardDao implements AutoCloseable {
+public class LeaderboardDao {
 
   private final Driver neo;
 
   LeaderboardDao() {
     neo = GraphDatabase.driver("bolt://localhost:7687", AuthTokens.basic("neo4j", "password"));
-  }
-
-  @Override
-  public void close() throws Exception {
-    neo.close();
   }
 
   public Leaderboard getLeaderboard() {
