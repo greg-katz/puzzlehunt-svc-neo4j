@@ -1,3 +1,7 @@
+// Deletes all nodes and relationships
+MATCH (n)
+DETACH DELETE n;
+
 // Load All The Things (nodes and their relationships)!
 CREATE
 (dash11:Hunt {
@@ -17,7 +21,7 @@ CREATE
 (lungHint1:Hint {
 unlockMins: 10,
 cost: 5,
-text: "lung hint 1 text"`
+text: "lung hint 1 text"
 }),
 (lungs)-[:HAS {order: 1 }]->(lungHint1),
 
@@ -96,6 +100,10 @@ response: "That's lungs, pay attention!"
 (team1)-
   [:SOLVED {start: localtime('12:52:01.001'), end: localtime('13:52:01.001'), points: 11}]
 ->(lungs),
+
+(team1)-
+  [:SOLVED {start: localtime('14:52:01.001'), end: localtime('15:52:01.001'), points: 5}]
+->(heart),
 
 (team1)-[:BOUGHT]->(lungHint1),
 
