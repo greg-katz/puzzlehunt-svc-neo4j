@@ -8,9 +8,8 @@ call {
   return count(puzzle) as totalPuzzles
 }
 return
-  team.name as teamName,
-  count(solved.end) = totalPuzzles as finishedHunt,
+  team.name as name,
+  count(solved.end) = totalPuzzles as finished,
   sum(solved.points) as score,
-  duration.between(min(solved.start), max(solved.end)) as huntDuration,
-  sum(duration.between(solved.start, solved.end)) as solvingDuration
+  sum(duration.between(solved.start, solved.end)) as time
 order by score desc

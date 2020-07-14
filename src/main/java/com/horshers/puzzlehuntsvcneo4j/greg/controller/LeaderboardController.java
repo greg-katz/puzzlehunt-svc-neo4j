@@ -29,11 +29,10 @@ public class LeaderboardController {
       return count(puzzle) as totalPuzzles
     }
     return
-      team.name as teamName,
-      count(solved.end) = totalPuzzles as finishedHunt,
+      team.name as name,
+      count(solved.end) = totalPuzzles as finished,
       sum(solved.points) as score,
-      duration.between(min(solved.start), max(solved.end)) as huntDuration,
-      sum(duration.between(solved.start, solved.end)) as solvingDuration
+      sum(duration.between(solved.start, solved.end)) as time
     order by score desc
     """;
 
@@ -53,10 +52,12 @@ public class LeaderboardController {
 
   private TeamResult extractTeamResult(org.neo4j.driver.Record record) {
     TeamResult teamResult = new TeamResult();
-    teamResult.setName(record.get("teamName").asString());
-    teamResult.setFinished(record.get("finishedHunt").asBoolean());
+    teamResult.setName(record.get("name").asString());
+    teamResult.setFinished(record.get("finished").asBoolean());
     teamResult.setScore(record.get("score").asInt());
-    teamResult.setDuration(Duration.ofSeconds(record.get("solvingDuration").asIsoDuration().seconds()));
+    // TODO: Rather than including a Duration object in the TeamResult, we should probably included a human-friendly
+    // formatted string
+    teamResult.setDuration(Duration.ofSeconds(record.get("time").asIsoDuration().seconds()));
 
     return teamResult;
   }
