@@ -1,7 +1,10 @@
 package com.horshers.puzzlehuntsvcneo4j.model;
 
+import lombok.Data;
+
 import java.util.List;
 
+@Data
 public class Leaderboard {
-  List<TeamResult> teamResults;
+  private List<TeamResult> teamResults;
 }

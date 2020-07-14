@@ -1,12 +1,14 @@
 package com.horshers.puzzlehuntsvcneo4j.model;
 
+import lombok.Data;
+
 import java.time.Duration;
 import java.time.Instant;
 
+@Data
 public class TeamResult {
-  String name;
-  int points;
-  Duration duration;
-  Instant start;
-  Instant end;
+  private String name;
+  private boolean finished;
+  private int score;
+  private Duration duration;
 }
