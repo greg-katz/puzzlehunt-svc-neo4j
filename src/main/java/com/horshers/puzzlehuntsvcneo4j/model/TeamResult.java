@@ -9,5 +9,5 @@ public class TeamResult {
   private String name;
   private boolean finished;
   private int score;
-  private Duration duration;
+  private String time;
 }

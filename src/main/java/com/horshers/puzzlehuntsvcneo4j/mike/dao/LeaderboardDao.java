@@ -61,11 +61,12 @@ public class LeaderboardDao {
     teamResult.setName(record.get("teamName").asString());
     teamResult.setScore(record.get("score").asInt());
     teamResult.setFinished(record.get("finishedHunt").asBoolean());
-    teamResult.setDuration(convertIsoDuration(record.get("solvingDuration").asIsoDuration()));
+    teamResult.setTime(convertIsoDuration(record.get("solvingDuration").asIsoDuration()));
     return teamResult;
   }
 
-  private Duration convertIsoDuration(IsoDuration isoDuration) {
-    return Duration.ofSeconds(isoDuration.seconds(), isoDuration.nanoseconds());
+  private String convertIsoDuration(IsoDuration isoDuration) {
+    Duration time = Duration.ofSeconds(isoDuration.seconds(), isoDuration.nanoseconds());
+    return String.format("%d:%02d:%02d", time.toHours(), time.toMinutes(), time.toSeconds());
   }
 }

@@ -7,6 +7,7 @@ import org.neo4j.driver.Driver;
 import org.neo4j.driver.GraphDatabase;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
+import org.neo4j.driver.types.IsoDuration;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -55,9 +56,8 @@ public class LeaderboardController {
     teamResult.setName(record.get("name").asString());
     teamResult.setFinished(record.get("finished").asBoolean());
     teamResult.setScore(record.get("score").asInt());
-    // TODO: Rather than including a Duration object in the TeamResult, we should probably included a human-friendly
-    // formatted string
-    teamResult.setDuration(Duration.ofSeconds(record.get("time").asIsoDuration().seconds()));
+    Duration time = Duration.ofSeconds(record.get("time").asIsoDuration().seconds());
+    teamResult.setTime(String.format("%d:%02d:%02d", time.toHoursPart(), time.toMinutesPart(), time.toSecondsPart()));
 
     return teamResult;
   }
