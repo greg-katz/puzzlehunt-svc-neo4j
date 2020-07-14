@@ -8,6 +8,6 @@ public class HelloNeo4jController {
 
   @GetMapping("/hello")
   public String hello() {
-    return "Hello";
+    return "Hello, Neo4j!";
   }
 }
