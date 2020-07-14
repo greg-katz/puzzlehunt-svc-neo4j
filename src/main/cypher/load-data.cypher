@@ -94,15 +94,15 @@ response: "That's lungs, pay attention!"
 (player2)-[:CAPTAIN_OF]->(team1),
 
 (team1)-
-  [:PLAYED {start: localtime('12:52:01.001'), end: localtime('17:52:01.001')}]
+  [:PLAYED]
 ->(dash11),
 
 (team1)-
-  [:SOLVED {start: localtime('12:52:01.001'), end: localtime('13:52:01.001'), points: 11}]
+  [:SOLVED {start: localtime('12:52:01.001'), end: localtime('13:28:55.821'), points: 11}]
 ->(lungs),
 
 (team1)-
-  [:SOLVED {start: localtime('14:52:01.001'), end: localtime('15:52:01.001'), points: 5}]
+  [:SOLVED {start: localtime('13:40:32.987'), end: localtime('15:52:01.001'), points: 5}]
 ->(heart),
 
 (team1)-[:BOUGHT]->(lungHint1),
@@ -123,18 +123,18 @@ response: "That's lungs, pay attention!"
 (player4)-[:MEMBER_OF]->(team2),
 
 (team2)-
-  [:PLAYED {start: localtime('12:52:02.002')}]
+  [:PLAYED]
 ->(dash11),
 
 (team2)-
   [:SOLVED {
-    start: localtime('12:52:01.001'),
-    end: localtime('13:52:01.001'),
+    start: localtime('12:52:01.002'),
+    end: localtime('13:42:41.722'),
     points: 12}]
 ->(lungs),
 
 (team2)-
-  [:SOLVED {start: localtime('12:52:01.001')}]
+  [:SOLVED {start: localtime('14:02:28.002')}]
 ->(heart),
 
 (team2)-[:BOUGHT]->(lungHint1),
