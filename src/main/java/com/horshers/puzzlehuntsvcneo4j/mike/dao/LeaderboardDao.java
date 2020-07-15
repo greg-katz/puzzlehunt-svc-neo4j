@@ -8,6 +8,8 @@ import org.neo4j.driver.types.IsoDuration;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +17,25 @@ import java.util.Map;
 
 @Component
 public class LeaderboardDao {
+
+  String query =
+    """
+      match (hunt:Hunt)<-[played:PLAYED]-(team:Team)-[solved:SOLVED]->(puzzle:Puzzle)
+      with hunt.name as huntName, team, solved
+      where huntName = 'DASH 11'
+      call {
+        with huntName
+        match (hunt:Hunt)-[:HAS]->(puzzle:Puzzle)
+        where hunt.name = huntName
+        return count(puzzle) as totalPuzzles
+      }
+      return
+        team.name as name,
+        count(solved.end) = totalPuzzles as finished,
+        sum(solved.points) as score,
+        sum(duration.between(solved.start, solved.end)) as time
+      order by score desc
+    """;
 
   private final Driver neo;
 
@@ -26,22 +47,7 @@ public class LeaderboardDao {
     Map<String, Object> params = new HashMap<>();
     params.put("huntName", "DASH 11");
     try (Session session = neo.session()) {
-      Result result = session.run("match (hunt:Hunt)<-[played:PLAYED]-(team:Team)-[solved:SOLVED]->(puzzle:Puzzle)\n" +
-          "with hunt.name as huntName, team, solved\n" +
-          "where huntName = $huntName\n" +
-          "call {\n" +
-          "  with huntName\n" +
-          "  match (hunt:Hunt)-[:HAS]->(puzzle:Puzzle)\n" +
-          "  where hunt.name = huntName\n" +
-          "  return count(puzzle) as totalPuzzles\n" +
-          "}\n" +
-          "return\n" +
-          "  team.name as teamName,\n" +
-          "  count(solved.end) = totalPuzzles as finishedHunt,\n" +
-          "  sum(solved.points) as score,\n" +
-          "  duration.between(min(solved.start), max(solved.end)) as huntDuration,\n" +
-          "  sum(duration.between(solved.start, solved.end)) as solvingDuration\n" +
-          "order by score desc", params);
+      Result result = session.run(query, params);
       return makeLeaderboardFromRecords(result.list());
     }
   }
@@ -58,15 +64,15 @@ public class LeaderboardDao {
 
   private TeamResult makeTeamResult(Record record) {
     TeamResult teamResult = new TeamResult();
-    teamResult.setName(record.get("teamName").asString());
+    teamResult.setName(record.get("name").asString());
     teamResult.setScore(record.get("score").asInt());
-    teamResult.setFinished(record.get("finishedHunt").asBoolean());
-    teamResult.setTime(convertIsoDuration(record.get("solvingDuration").asIsoDuration()));
+    teamResult.setFinished(record.get("finished").asBoolean());
+    teamResult.setTime(convertIsoDuration(record.get("time").asIsoDuration()));
     return teamResult;
   }
 
   private String convertIsoDuration(IsoDuration isoDuration) {
     Duration time = Duration.ofSeconds(isoDuration.seconds(), isoDuration.nanoseconds());
-    return String.format("%d:%02d:%02d", time.toHours(), time.toMinutes(), time.toSeconds());
+    return String.format("%d:%02d:%02d", time.toHoursPart(), time.toMinutesPart(), time.toSecondsPart());
   }
 }
