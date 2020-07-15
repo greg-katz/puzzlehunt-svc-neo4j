@@ -2,16 +2,20 @@ package com.horshers.puzzlehunt.driver.dao;
 
 import com.horshers.puzzlehunt.driver.model.Leaderboard;
 import com.horshers.puzzlehunt.driver.model.TeamResult;
+import org.neo4j.driver.AuthTokens;
+import org.neo4j.driver.Driver;
+import org.neo4j.driver.GraphDatabase;
 import org.neo4j.driver.Record;
-import org.neo4j.driver.*;
+import org.neo4j.driver.Result;
+import org.neo4j.driver.Session;
 import org.neo4j.driver.types.IsoDuration;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static java.util.stream.Collectors.toList;
 
 @Component
 public class LeaderboardDao {
@@ -42,8 +46,7 @@ public class LeaderboardDao {
   }
 
   public Leaderboard getLeaderboard() {
-    Map<String, Object> params = new HashMap<>();
-    params.put("huntName", "DASH 11");
+    Map<String, Object> params = Map.of("huntName", "DASH 11");
     try (Session session = neo.session()) {
       Result result = session.run(query, params);
       return makeLeaderboardFromRecords(result.list());
@@ -52,11 +55,7 @@ public class LeaderboardDao {
 
   private Leaderboard makeLeaderboardFromRecords(List<Record> records) {
     Leaderboard leaderboard = new Leaderboard();
-    List<TeamResult> teamResults = new ArrayList<>();
-    for (Record record : records) {
-      teamResults.add(makeTeamResult(record));
-    }
-    leaderboard.setTeamResults(teamResults);
+    leaderboard.setTeamResults(records.stream().map(this::makeTeamResult).collect(toList()));
     return leaderboard;
   }
 
