@@ -11,4 +11,6 @@ public class Team {
   private String name;
   private Player captain;
   private List<Player> players;
+  // TODO: Probably Team should have a hunt field, right?
+  //private Hunt hunt;
 }
