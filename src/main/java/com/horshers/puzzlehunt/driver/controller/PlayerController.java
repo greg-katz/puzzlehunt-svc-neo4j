@@ -32,8 +32,9 @@ public class PlayerController {
     return playerDao.updatePlayer(playerId, name);
   }
 
-  public void removePlayer(String uuid) {
-
+  @RequestMapping("/driver/player/{uuid}/remove")
+  public boolean removePlayer(@PathVariable("uuid") UUID playerId) {
+    return playerDao.removePlayer(playerId);
   }
 
 

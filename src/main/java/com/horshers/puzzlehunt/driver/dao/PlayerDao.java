@@ -65,6 +65,20 @@ public class PlayerDao {
     }
   }
 
+  public boolean removePlayer(UUID playerId) {
+    String query =
+        """
+          MATCH (person:Person{uuid:$uuid})
+          DETACH DELETE person
+          RETURN count(person) as count
+        """;
+    Map<String, Object> params = Map.of("uuid", playerId.toString());
+    try (Session session = neoDriver.session()) {
+      Result result = session.run(query, params);
+      return result.single().get("count").asInt() >= 1;
+    }
+  }
+
   private Player makePlayerFromResult(Record record) {
     Player player = new Player();
     player.setId(UUID.fromString(record.get("person").get("uuid").asString()));
