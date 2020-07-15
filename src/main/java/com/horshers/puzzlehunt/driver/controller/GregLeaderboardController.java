@@ -1,4 +1,4 @@
-package com.horshers.puzzlehunt.greg.controller;
+package com.horshers.puzzlehunt.driver.controller;
 
 import com.horshers.puzzlehunt.driver.model.Leaderboard;
 import com.horshers.puzzlehunt.driver.model.TeamResult;
@@ -15,8 +15,8 @@ import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
 
-@RestController("GregLeaderboardController")
-public class LeaderboardController {
+@RestController()
+public class GregLeaderboardController {
 
   private static String query = """
     match (hunt:Hunt)<-[played:PLAYED]-(team:Team)-[solved:SOLVED]->(puzzle:Puzzle)
