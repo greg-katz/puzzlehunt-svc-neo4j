@@ -24,7 +24,7 @@ public class LeaderboardDao {
     """
       match (hunt:Hunt)<-[played:PLAYED]-(team:Team)-[solved:SOLVED]->(puzzle:Puzzle)
       with hunt.name as huntName, team, solved
-      where huntName = 'DASH 11'
+      where huntName = $huntName
       call {
         with huntName
         match (hunt:Hunt)-[:HAS]->(puzzle:Puzzle)
