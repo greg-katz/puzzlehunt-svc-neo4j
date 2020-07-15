@@ -9,6 +9,7 @@ import org.neo4j.driver.Record;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
 import org.neo4j.driver.types.IsoDuration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -19,6 +20,9 @@ import static java.util.stream.Collectors.toList;
 
 @Component
 public class LeaderboardDao {
+
+  @Autowired
+  private Driver neoDriver;
 
   String query =
     """
@@ -39,15 +43,9 @@ public class LeaderboardDao {
       order by score desc
     """;
 
-  private final Driver neo;
-
-  LeaderboardDao() {
-    neo = GraphDatabase.driver("bolt://localhost:7687", AuthTokens.basic("neo4j", "password"));
-  }
-
   public Leaderboard getLeaderboard() {
     Map<String, Object> params = Map.of("huntName", "DASH 11");
-    try (Session session = neo.session()) {
+    try (Session session = neoDriver.session()) {
       Result result = session.run(query, params);
       return makeLeaderboardFromRecords(result.list());
     }
