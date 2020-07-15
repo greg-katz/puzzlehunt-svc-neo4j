@@ -23,8 +23,8 @@ public class TeamDao {
     String query = """
       match
         (team:Team)-[:PLAYED]->(hunt:Hunt{uuid:$hunt}),
-        (captain:Person)-[:CAPTAIN_OF]->(team),
-        (player:Person)-[:MEMBER_OF]->(team)
+        (team)<-[:CAPTAIN_OF]-(captain:Person),
+        (team)<-[:MEMBER_OF]-(player:Person)
       return team, captain, collect(player) as players
       order by team.name
     """;
