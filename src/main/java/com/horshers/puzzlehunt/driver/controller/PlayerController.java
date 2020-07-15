@@ -37,5 +37,9 @@ public class PlayerController {
     return playerDao.removePlayer(playerId);
   }
 
-
+  @RequestMapping("/driver/player/{uuid}/changeteam")
+  public Player changeTeam(@PathVariable("uuid") UUID playerId,
+                          @RequestParam UUID newTeamId) {
+    return playerDao.changeTeam(playerId, newTeamId);
+  }
 }

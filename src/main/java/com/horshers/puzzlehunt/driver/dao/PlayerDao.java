@@ -23,12 +23,13 @@ public class PlayerDao {
     UUID playerId = UUID.randomUUID();
     String query =
       """
+        MATCH (team:Team{uuid:$teamId})
         CREATE
         (person:Person {
           uuid: $playerId,
           name: $name
         }),
-        (person)-[:MEMBER_OF]->(team:Team{uuid:$teamId})
+        (person)-[:MEMBER_OF]->(team)
         RETURN person
       """;
     Map<String, Object> params = Map.of("teamId", teamId.toString(), "playerId", playerId.toString(), "name", name);
@@ -76,6 +77,23 @@ public class PlayerDao {
     try (Session session = neoDriver.session()) {
       Result result = session.run(query, params);
       return result.single().get("count").asInt() >= 1;
+    }
+  }
+
+  public Player changeTeam(UUID playerId, UUID newTeamId) {
+    String query =
+        """
+          MATCH (person:Person{uuid:$playerId})-[r:MEMBER_OF]-(firstTeam:Team)
+          DELETE r
+          WITH person
+          MATCH (secondTeam:Team{uuid:$newTeamId})
+          CREATE (person)-[:MEMBER_OF]->(secondTeam)
+          RETURN person, secondTeam as team
+        """;
+    Map<String, Object> params = Map.of("playerId", playerId.toString(), "newTeamId", newTeamId.toString());
+    try (Session session = neoDriver.session()) {
+      Result result = session.run(query, params);
+      return makePlayerFromResult(result.single());
     }
   }
 
