@@ -27,10 +27,25 @@ public class TeamDao {
         (team)<-[:MEMBER_OF]-(player:Person)
       return team, captain, collect(player) as players
       order by team.name
-    """;
+      """;
 
     try (Session session = neo.session()) {
       return session.run(query, Map.of("hunt", hunt.toString())).list(this::team);
+    }
+  }
+
+  public Team getTeam(UUID hunt, UUID team) {
+    String query = """
+      match
+        (team:Team{uuid:$team})-[:PLAYED]->(hunt:Hunt{uuid:$hunt}),
+        (team)<-[:CAPTAIN_OF]-(captain:Person),
+        (team)<-[:MEMBER_OF]-(player:Person)
+      return team, captain, collect(player) as players
+      order by team.name
+      """;
+
+    try (Session session = neo.session()) {
+      return team(session.run(query, Map.of("hunt", hunt.toString(), "team", team.toString())).single());
     }
   }
 

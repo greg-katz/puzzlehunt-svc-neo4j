@@ -20,4 +20,9 @@ public class TeamsController {
   public List<Team> teams(@PathVariable UUID hunt) {
     return teamDao.getTeams(hunt);
   }
+
+  @GetMapping("/driver/hunts/{hunt}/teams/{team}")
+  public Team team(@PathVariable UUID hunt, @PathVariable UUID team) {
+    return teamDao.getTeam(hunt, team);
+  }
 }
