@@ -1,11 +1,9 @@
-package com.horshers.puzzlehuntsvcneo4j.model;
+package com.horshers.puzzlehunt.driver.model;
 
 import lombok.Data;
 import org.neo4j.ogm.annotation.GeneratedValue;
 import org.neo4j.ogm.annotation.Id;
 import org.neo4j.ogm.id.UuidStrategy;
-
-import java.time.Duration;
 
 @Data
 public class TeamResult {

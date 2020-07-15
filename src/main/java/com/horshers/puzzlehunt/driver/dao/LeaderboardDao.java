@@ -1,15 +1,13 @@
-package com.horshers.puzzlehuntsvcneo4j.mike.dao;
+package com.horshers.puzzlehunt.driver.dao;
 
-import com.horshers.puzzlehuntsvcneo4j.model.Leaderboard;
-import com.horshers.puzzlehuntsvcneo4j.model.TeamResult;
+import com.horshers.puzzlehunt.driver.model.Leaderboard;
+import com.horshers.puzzlehunt.driver.model.TeamResult;
 import org.neo4j.driver.Record;
 import org.neo4j.driver.*;
 import org.neo4j.driver.types.IsoDuration;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

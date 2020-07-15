@@ -1,4 +1,4 @@
-package com.horshers.puzzlehuntsvcneo4j.model;
+package com.horshers.puzzlehunt.driver.model;
 
 import lombok.Data;
 

@@ -1,4 +1,4 @@
-package com.horshers.puzzlehuntsvcneo4j.model.ogm;
+package com.horshers.puzzlehunt.ogm.model;
 
 import org.neo4j.ogm.annotation.GeneratedValue;
 import org.neo4j.ogm.annotation.Id;

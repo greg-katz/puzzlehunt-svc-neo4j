@@ -1,4 +1,4 @@
-package com.horshers.puzzlehuntsvcneo4j.config.ogm;
+package com.horshers.puzzlehunt.ogm.config;
 
 import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.context.annotation.Bean;

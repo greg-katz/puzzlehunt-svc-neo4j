@@ -1,4 +1,4 @@
-package com.horshers.puzzlehuntsvcneo4j.greg.controller;
+package com.horshers.puzzlehunt.driver.controller;
 
 import org.neo4j.driver.AuthTokens;
 import org.neo4j.driver.Driver;
@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 public class LabelsController {
 
-  @GetMapping("/greg/labels")
+  @GetMapping("/driver/labels")
   public List<String> labels() {
     Driver driver = GraphDatabase.driver("bolt://localhost:7687", AuthTokens.basic("neo4j", "password"));
     Session session = driver.session();

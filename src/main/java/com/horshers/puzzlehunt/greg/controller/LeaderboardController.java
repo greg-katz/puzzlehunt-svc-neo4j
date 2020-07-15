@@ -1,13 +1,12 @@
-package com.horshers.puzzlehuntsvcneo4j.greg.controller;
+package com.horshers.puzzlehunt.greg.controller;
 
-import com.horshers.puzzlehuntsvcneo4j.model.Leaderboard;
-import com.horshers.puzzlehuntsvcneo4j.model.TeamResult;
+import com.horshers.puzzlehunt.driver.model.Leaderboard;
+import com.horshers.puzzlehunt.driver.model.TeamResult;
 import org.neo4j.driver.AuthTokens;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.GraphDatabase;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
-import org.neo4j.driver.types.IsoDuration;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
