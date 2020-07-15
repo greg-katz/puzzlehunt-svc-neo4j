@@ -23,8 +23,8 @@ public class TeamDao {
     String query = """
       match
         (team:Team)-[:PLAYED]->(hunt:Hunt{uuid:$hunt}),
-        (captain:Person)-[:CAPTAIN_OF]->(team:Team),
-        (player:Person)-[:MEMBER_OF]->(team:Team)
+        (captain:Person)-[:CAPTAIN_OF]->(team),
+        (player:Person)-[:MEMBER_OF]->(team)
       return team, captain, collect(player) as players
       order by team.name
     """;
@@ -47,7 +47,6 @@ public class TeamDao {
     Player player = new Player();
     player.setId(uuid(value.get("uuid")));
     player.setName(value.get("name").asString());
-    // TODO: Set the team property (oops - you don't have the record in this method...)
     return player;
   }
 
