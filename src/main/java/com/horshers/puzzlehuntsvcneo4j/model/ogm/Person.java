@@ -1,12 +1,14 @@
 package com.horshers.puzzlehuntsvcneo4j.model.ogm;
 
+import lombok.Data;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
 @NodeEntity
-public class Person {
-  String name;
+public class Person extends Entity {
+
+  private String name;
 
   @Relationship("MEMBER_OF")
-  Team team;
+  private Team team;
 }

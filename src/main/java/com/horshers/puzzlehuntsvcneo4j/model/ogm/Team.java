@@ -8,7 +8,8 @@ import java.util.List;
 import static org.neo4j.ogm.annotation.Relationship.INCOMING;
 
 @NodeEntity
-public class Team {
+public class Team extends Entity {
+
   String name;
 
   @Relationship(type = "MEMBER_OF", direction = INCOMING)
