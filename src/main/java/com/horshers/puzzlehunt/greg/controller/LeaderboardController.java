@@ -15,7 +15,7 @@ import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
 
-@RestController
+@RestController("GregLeaderboardController")
 public class LeaderboardController {
 
   private static String query = """
