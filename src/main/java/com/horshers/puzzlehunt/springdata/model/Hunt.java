@@ -1,6 +1,7 @@
 package com.horshers.puzzlehunt.springdata.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
@@ -9,6 +10,7 @@ import java.util.List;
 
 @NodeEntity
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class Hunt extends Entity {
   String name;
   Instant start;
