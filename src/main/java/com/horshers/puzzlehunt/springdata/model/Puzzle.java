@@ -8,22 +8,27 @@ import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.List;
 
-import static org.neo4j.ogm.annotation.Relationship.INCOMING;
-
 @NodeEntity
 @Data
-public class Team extends Entity {
-
+public class Puzzle extends Entity {
   String name;
-
-  @Relationship(type = "MEMBER_OF", direction = INCOMING)
-  List<Person> players;
+  String answer;
+  int par;
+  int points;
 
   @ToString.Exclude
   @JsonIgnore
-  @Relationship(type = "PLAYED", direction = INCOMING)
+  @Relationship("HAS")
   Hunt hunt;
+  List<Hint> hints;
 
-  @Relationship("SOLVED")
+  @ToString.Exclude
+  @JsonIgnore
+  @Relationship("HAS")
+  List<PartialSolution> partialSolutions;
+
+  @ToString.Exclude
+  @JsonIgnore
+  @Relationship(value = "SOLVED", direction = Relationship.INCOMING)
   List<TeamSolvedPuzzle> teamSolvedPuzzles;
 }
