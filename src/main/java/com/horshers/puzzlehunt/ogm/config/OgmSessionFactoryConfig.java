@@ -1,13 +1,13 @@
 package com.horshers.puzzlehunt.ogm.config;
 
-import org.neo4j.ogm.session.SessionFactory;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
+@Configuration("ogm-ogm-config")
 public class OgmSessionFactoryConfig {
 
-  @Bean
+/*
+ This conflicts with the one in spring data.
+ @Bean
   SessionFactory sessionFactory() {
     org.neo4j.ogm.config.Configuration configuration = new org.neo4j.ogm.config.Configuration.Builder()
         .uri("bolt://localhost:7687")
@@ -15,5 +15,5 @@ public class OgmSessionFactoryConfig {
         .build();
 
     return new SessionFactory(configuration, "com.horshers.puzzlehunt.ogm");
-  }
+  }*/
 }
