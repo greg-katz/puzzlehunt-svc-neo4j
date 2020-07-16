@@ -7,14 +7,15 @@ import lombok.ToString;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
+import java.util.UUID;
+
 import static org.neo4j.ogm.annotation.Relationship.INCOMING;
 
 @NodeEntity
 @Data
 public class Hint {
 
-  // TODO: Add UUID to load-data.cypher
-  //private UUID uuid;
+  private UUID uuid;
   private String text;
   private int unlockMins;
   private int cost;
