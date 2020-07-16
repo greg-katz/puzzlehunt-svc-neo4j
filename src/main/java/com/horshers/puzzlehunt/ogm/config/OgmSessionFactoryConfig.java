@@ -14,6 +14,6 @@ public class OgmSessionFactoryConfig {
         .credentials("neo4j", "password")
         .build();
 
-    return new SessionFactory(configuration, "com.horshers.puzzlehuntsvcneo4j.model.ogm");
+    return new SessionFactory(configuration, "com.horshers.puzzlehunt.ogm");
   }
 }

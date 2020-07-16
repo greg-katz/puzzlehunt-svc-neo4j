@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Component
@@ -19,8 +18,6 @@ public class PersonDao {
   public List<Person> findAll() {
     Session session = sessionFactory.openSession();
 
-    Collection<Person> collection = session.loadAll(Person.class, 0);
-
-    return new ArrayList<>(collection);
+    return new ArrayList(session.loadAll(Person.class, 1));
   }
 }
