@@ -20,10 +20,10 @@ public class Puzzle extends Entity {
   @JsonIgnore
   @Relationship("HAS")
   Hunt hunt;
+
+  @Relationship("HAS")
   List<Hint> hints;
 
-  @ToString.Exclude
-  @JsonIgnore
   @Relationship("HAS")
   List<PartialSolution> partialSolutions;
 
