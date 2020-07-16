@@ -2,9 +2,7 @@ package com.horshers.puzzlehunt.driver.dao;
 
 import com.horshers.puzzlehunt.driver.model.Leaderboard;
 import com.horshers.puzzlehunt.driver.model.TeamResult;
-import org.neo4j.driver.AuthTokens;
 import org.neo4j.driver.Driver;
-import org.neo4j.driver.GraphDatabase;
 import org.neo4j.driver.Record;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
