@@ -2,8 +2,8 @@ package com.horshers.puzzlehunt.springdata.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import lombok.ToString;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
