@@ -1,9 +1,11 @@
 package com.horshers.puzzlehuntspringdata.repo;
 
 import com.horshers.puzzlehuntspringdata.model.Hunt;
+import com.horshers.puzzlehuntspringdata.model.Leaderboard;
 import com.horshers.puzzlehuntspringdata.model.TeamResult;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -16,11 +18,10 @@ public interface HuntRepository extends Neo4jRepository<Hunt, UUID> {
 
   Hunt findByName(String name);
 
-  // TODO: Parameterize the huntName (docs say $0; driver implementation used $huntName)
   @Query("""
     match (hunt:Hunt)<-[played:PLAYED]-(team:Team)-[solved:SOLVED]->(puzzle:Puzzle)
     with hunt.name as huntName, team, solved
-    where huntName = 'DASH 11'
+    where huntName = $huntName
     call {
       with huntName
       match (hunt:Hunt)-[:HAS]->(puzzle:Puzzle)
@@ -34,5 +35,11 @@ public interface HuntRepository extends Neo4jRepository<Hunt, UUID> {
       sum(duration.between(solved.start, solved.end)) as time
     order by score desc
     """)
-  List<TeamResult> getLeaderboardByHuntName(String huntName);
+  List<TeamResult> getTeamResultsByHuntName(@Param("huntName") String huntName);
+
+  default Leaderboard getLeaderboardByHuntName(String huntName) {
+    Leaderboard leaderboard = new Leaderboard();
+    leaderboard.setTeamResults(getTeamResultsByHuntName(huntName));
+    return leaderboard;
+  }
 }

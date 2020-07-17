@@ -1,7 +1,7 @@
 package com.horshers.puzzlehuntspringdata.controller;
 
 import com.horshers.puzzlehuntspringdata.model.Hunt;
-import com.horshers.puzzlehuntspringdata.model.TeamResult;
+import com.horshers.puzzlehuntspringdata.model.Leaderboard;
 import com.horshers.puzzlehuntspringdata.repo.HuntRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,7 +35,7 @@ public class HuntsController {
   }
 
   @GetMapping("/springdata/hunts/{huntName}/leaderboard")
-  public List<TeamResult> leaderboard(String huntName) {
+  public Leaderboard leaderboard(@PathVariable String huntName) {
     return huntRepository.getLeaderboardByHuntName(huntName);
   }
 }
