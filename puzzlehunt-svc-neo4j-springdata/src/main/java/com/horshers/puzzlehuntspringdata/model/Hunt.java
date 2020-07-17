@@ -7,14 +7,16 @@ import org.neo4j.ogm.annotation.Relationship;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 
 @NodeEntity
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class Hunt extends Entity {
-  String name;
-  Instant start;
-  Instant end;
+  private UUID uuid;
+  private String name;
+  private Instant start;
+  private Instant end;
 
   @Relationship("HAS")
   List<Puzzle> puzzles;
