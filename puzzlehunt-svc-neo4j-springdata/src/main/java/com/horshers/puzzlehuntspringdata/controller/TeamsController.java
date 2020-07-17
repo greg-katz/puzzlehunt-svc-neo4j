@@ -1,7 +1,7 @@
-package com.horshers.puzzlehunt.springdata.controller;
+package com.horshers.puzzlehuntspringdata.controller;
 
-import com.horshers.puzzlehunt.springdata.model.Team;
-import com.horshers.puzzlehunt.springdata.repo.TeamRepository;
+import com.horshers.puzzlehuntspringdata.model.Team;
+import com.horshers.puzzlehuntspringdata.repo.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

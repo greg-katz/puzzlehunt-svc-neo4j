@@ -1,7 +1,7 @@
-package com.horshers.puzzlehunt.springdata.repo;
+package com.horshers.puzzlehuntspringdata.repo;
 
-import com.horshers.puzzlehunt.springdata.model.Hunt;
-import com.horshers.puzzlehunt.springdata.model.Team;
+import com.horshers.puzzlehuntspringdata.model.Hunt;
+import com.horshers.puzzlehuntspringdata.model.Team;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.stereotype.Component;
 

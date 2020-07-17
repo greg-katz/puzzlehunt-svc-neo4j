@@ -7,4 +7,5 @@ open module puzzlehunt.svc.neo4j.springdata {
   requires spring.beans;
   requires lombok;
   requires com.fasterxml.jackson.annotation;
+  requires org.apache.commons.collections4;
 }
