@@ -7,6 +7,4 @@ open module puzzlehunt.svc.neo4j.springdata {
   requires spring.beans;
   requires lombok;
   requires com.fasterxml.jackson.annotation;
-  exports com.horshers.puzzlehuntspringdata.controller;
-  exports com.horshers.puzzlehuntspringdata.repo;
 }

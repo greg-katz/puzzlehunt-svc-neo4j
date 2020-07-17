@@ -8,5 +8,4 @@ open module puzzlehunt.svc.neo4j.app {
   requires puzzlehunt.svc.neo4j.driver;
   requires puzzlehunt.svc.neo4j.ogm;
   requires puzzlehunt.svc.neo4j.springdata;
-  exports com.horshers.puzzlehunt;
 }
