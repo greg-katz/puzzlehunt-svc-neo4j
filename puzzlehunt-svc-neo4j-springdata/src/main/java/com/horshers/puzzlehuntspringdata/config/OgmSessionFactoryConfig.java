@@ -16,7 +16,6 @@ public class OgmSessionFactoryConfig {
         .credentials("neo4j", "password")
         .build();
 
-    // Cheating a bit here to also scan the ogm package. Totally cheesy.
     return new SessionFactory(configuration, "com.horshers.puzzlehuntspringdata", "com.horshers.puzzlehuntogm");
   }
 }
