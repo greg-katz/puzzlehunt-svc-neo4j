@@ -25,7 +25,7 @@ public class TeamsController {
     return toList(teamRepository.findAll());
   }
 
-  @GetMapping(value = "/springdata/hunts/{hunt}/teams/{nameOrUuid}")
+  @GetMapping("/springdata/hunts/{hunt}/teams/{nameOrUuid}")
   public Team team(@PathVariable UUID hunt, @PathVariable String nameOrUuid) {
     // TODO: Use the hunt parameter
     try {
