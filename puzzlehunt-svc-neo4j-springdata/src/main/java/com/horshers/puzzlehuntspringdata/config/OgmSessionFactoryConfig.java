@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
 
-@Configuration("spring-data--ogm-config")
+@Configuration("spring-data-ogm-config")
 @EnableNeo4jRepositories(basePackages = "com.horshers.puzzlehuntspringdata.repo")
 public class OgmSessionFactoryConfig {
 
