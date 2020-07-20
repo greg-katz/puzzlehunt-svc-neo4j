@@ -112,11 +112,11 @@ CREATE
 ->(dash11),
 
 (team1)-
-  [:SOLVED {start: localtime('12:52:01.001'), end: localtime('13:28:55.821'), points: 11}]
+  [:SOLVED {uuid:"b072e551-4f7f-4cab-bd1d-acffeef4dabe", start: localtime('12:52:01.001'), end: localtime('13:28:55.821'), points: 11}]
 ->(lungs),
 
 (team1)-
-  [:SOLVED {start: localtime('13:40:32.987'), end: localtime('15:52:01.001'), points: 5}]
+  [:SOLVED {uuid: "214941d3-98d8-4378-b9f1-c69490e59e26", start: localtime('13:40:32.987'), end: localtime('15:52:01.001'), points: 5}]
 ->(heart),
 
 (team1)-[:BOUGHT]->(lungHint1),
@@ -145,13 +145,14 @@ CREATE
 
 (team2)-
   [:SOLVED {
+    uuid: "34e52114-9ca9-4981-9b9c-99ca1ab8dd0e",
     start: localtime('12:52:01.002'),
     end: localtime('13:42:41.722'),
     points: 12}]
 ->(lungs),
 
 (team2)-
-  [:SOLVED {start: localtime('14:02:28.002')}]
+  [:SOLVED {uuid: "7a5a4094-a751-4b72-908c-22a2244a4881", start: localtime('14:02:28.002')}]
 ->(heart),
 
 (team2)-[:BOUGHT]->(lungHint1),

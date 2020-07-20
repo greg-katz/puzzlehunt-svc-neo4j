@@ -8,7 +8,7 @@ import java.time.LocalTime;
 
 @RelationshipEntity(type = "SOLVED")
 @Data
-public class TeamSolvedPuzzle {
+public class TeamSolvedPuzzle extends Entity {
 
   LocalTime start;
   LocalTime end;
