@@ -1,9 +1,7 @@
 package com.horshers.puzzlehuntspringdata.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
@@ -18,13 +16,11 @@ public class Team extends Entity {
 
   String name;
 
+  @Relationship(type = "CAPTAIN_OF", direction = INCOMING)
+  Person captain;
+
   @Relationship(type = "MEMBER_OF", direction = INCOMING)
   List<Person> players;
-
-  @ToString.Exclude
-  @JsonIgnore
-  @Relationship(type = "PLAYED", direction = INCOMING)
-  Hunt hunt;
 
   @Relationship("SOLVED")
   List<TeamSolvedPuzzle> teamSolvedPuzzles;
