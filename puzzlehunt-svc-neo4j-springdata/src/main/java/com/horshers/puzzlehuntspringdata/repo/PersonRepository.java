@@ -8,5 +8,4 @@ import java.util.UUID;
 public interface PersonRepository extends Neo4jRepository<Person, UUID> {
 
   Person findByName(String name);
-
 }
