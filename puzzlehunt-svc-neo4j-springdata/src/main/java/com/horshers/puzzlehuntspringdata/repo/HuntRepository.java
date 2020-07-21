@@ -14,6 +14,8 @@ import java.util.UUID;
 @Component
 public interface HuntRepository extends Neo4jRepository<Hunt, UUID> {
 
+  Hunt findByUuid(UUID uuid);
+
   Hunt findByName(String name);
 
   @Query("""
