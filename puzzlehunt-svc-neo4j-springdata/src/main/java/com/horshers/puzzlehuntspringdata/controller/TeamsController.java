@@ -1,5 +1,6 @@
 package com.horshers.puzzlehuntspringdata.controller;
 
+import com.horshers.puzzlehuntspringdata.model.Hunt;
 import com.horshers.puzzlehuntspringdata.model.Person;
 import com.horshers.puzzlehuntspringdata.model.Team;
 import com.horshers.puzzlehuntspringdata.model.TeamSolvedPuzzle;
@@ -28,11 +29,10 @@ public class TeamsController {
   @Autowired private PersonRepository personRepository;
   @Autowired private PuzzleRepository puzzleRepository;
 
-  @GetMapping("/springdata/teams")
-  public List<Team> findAllTeams() {
-    // TODO: How do you look up the teams for the hunt? Do you need to look up the Hunt object first so you can pass
-    //  it in? Can the repository define a query with @Query that takes a hunt UUID?
-    return toList(teamRepository.findAll());
+  // TODO: Deal with a non-existent hunt
+  @GetMapping("/springdata/hunts/{id}/teams")
+  public List<Team> findAllTeams(@PathVariable("id") Hunt hunt) {
+    return hunt.getTeams();
   }
 
   // TODO: Does the default depth of one include the TeamSolvedPuzzles including their Puzzles?

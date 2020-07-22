@@ -8,6 +8,8 @@ import org.neo4j.ogm.annotation.Relationship;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+import static org.neo4j.ogm.annotation.Relationship.INCOMING;
+
 @NodeEntity
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -21,6 +23,6 @@ public class Hunt extends Entity {
   @Relationship("HAS")
   List<Puzzle> puzzles;
 
-  @Relationship("PLAYED")
+  @Relationship(value = "PLAYED", direction = INCOMING)
   List<Team> teams;
 }
