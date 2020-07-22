@@ -4,6 +4,7 @@ import com.horshers.puzzlehuntspringdata.model.Hunt;
 import com.horshers.puzzlehuntspringdata.model.Person;
 import com.horshers.puzzlehuntspringdata.model.Team;
 import com.horshers.puzzlehuntspringdata.model.TeamSolvedPuzzle;
+import com.horshers.puzzlehuntspringdata.repo.HuntRepository;
 import com.horshers.puzzlehuntspringdata.repo.PersonRepository;
 import com.horshers.puzzlehuntspringdata.repo.PuzzleRepository;
 import com.horshers.puzzlehuntspringdata.repo.TeamRepository;
@@ -25,6 +26,7 @@ import static org.apache.commons.collections4.IterableUtils.toList;
 @RestController("spring-data-teams-controller")
 public class TeamsController {
 
+  @Autowired private HuntRepository huntRepository;
   @Autowired private TeamRepository teamRepository;
   @Autowired private PersonRepository personRepository;
   @Autowired private PuzzleRepository puzzleRepository;
@@ -44,9 +46,15 @@ public class TeamsController {
 
   // TODO: Validate that the ID is null
   // TODO: It would be cool if the team required a captain to be created at the same time
-  @PostMapping("/springdata/teams")
-  public Team createTeam(Team team) {
-    return teamRepository.save(team);
+  // TODO: Protect the hunt from accepting a new team with the same name as an existing team
+  // TODO: Accept JSON
+  @PostMapping("/springdata/hunts/{id}/teams")
+  public Team createTeam(@PathVariable("id") Hunt hunt, Team team) {
+    team = teamRepository.save(team);
+    hunt.getTeams().add(team);
+    // TODO: Refactor to be less of a jerk
+    UUID teamId = team.getUuid();
+    return huntRepository.save(hunt).getTeams().stream().filter(t -> t.getUuid().equals(teamId)).findFirst().get();
   }
 
   // TODO: Validate that the provided Team comes with an ID and matches the path variable (any chance that Spring can supplement the entity's
@@ -108,6 +116,7 @@ public class TeamsController {
     return teamRepository.findById(id, 2).get().getTeamSolvedPuzzles();
   }
 
+  // TODO: What does returning Optional do, exactly? Does Spring MVC do something cool when the Optional is empty?
   @PostMapping("/springdata/teams/{id}/solvedpuzzles")
   public Optional<TeamSolvedPuzzle> createSolvedPuzzle(@PathVariable("id") Team team, UUID puzzle) {
     TeamSolvedPuzzle solvedPuzzle = new TeamSolvedPuzzle();
