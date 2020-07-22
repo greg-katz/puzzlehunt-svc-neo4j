@@ -30,12 +30,13 @@ public class TeamsController {
   @Autowired private PuzzleRepository puzzleRepository;
 
   // TODO: Deal with a non-existent hunt
+  // TODO: How do you get the teams to be sorted by name? Can you convince Neo to load the hunt's teams in alphabetical
+  // order?
   @GetMapping("/springdata/hunts/{id}/teams")
   public List<Team> findAllTeams(@PathVariable("id") Hunt hunt) {
     return hunt.getTeams();
   }
 
-  // TODO: Does the default depth of one include the TeamSolvedPuzzles including their Puzzles?
   @GetMapping("/springdata/teams/{id}")
   public Team findTeam(@PathVariable("id") Team team) {
     return team;
