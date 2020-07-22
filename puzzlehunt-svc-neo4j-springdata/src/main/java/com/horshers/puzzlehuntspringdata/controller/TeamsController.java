@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalTime;
@@ -47,9 +48,8 @@ public class TeamsController {
   // TODO: Validate that the ID is null
   // TODO: It would be cool if the team required a captain to be created at the same time
   // TODO: Protect the hunt from accepting a new team with the same name as an existing team
-  // TODO: Accept JSON
   @PostMapping("/springdata/hunts/{id}/teams")
-  public Team createTeam(@PathVariable("id") Hunt hunt, Team team) {
+  public Team createTeam(@PathVariable("id") Hunt hunt, @RequestBody Team team) {
     team = teamRepository.save(team);
     hunt.getTeams().add(team);
     // TODO: Refactor to be less of a jerk
@@ -62,7 +62,7 @@ public class TeamsController {
   // parameter?)
   // TODO: Validate that a changed team name doesn't collide with an existing team's name
   @PutMapping("/springdata/teams/{id}")
-  public Team updateTeam(Team team) {
+  public Team updateTeam(@RequestBody Team team) {
     return teamRepository.save(team);
   }
 
