@@ -57,8 +57,10 @@ public class TeamsController {
     return huntRepository.save(hunt).getTeams().stream().filter(t -> t.getUuid().equals(teamId)).findFirst().get();
   }
 
-  // TODO: Validate that the provided Team comes with an ID and matches the path variable (any chance that Spring can supplement the entity's
-  // annotated validation here by means of an additional validation annotation on the team parameter?)
+  // TODO: Validate that the provided Team comes with an ID and matches the path variable (any chance that Spring can
+  // supplement the entity's annotated validation here by means of an additional validation annotation on the team
+  // parameter?)
+  // TODO: Validate that a changed team name doesn't collide with an existing team's name
   @PutMapping("/springdata/teams/{id}")
   public Team updateTeam(Team team) {
     return teamRepository.save(team);
