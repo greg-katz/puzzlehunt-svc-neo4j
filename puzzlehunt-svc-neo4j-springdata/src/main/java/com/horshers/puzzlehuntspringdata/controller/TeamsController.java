@@ -11,7 +11,13 @@ import com.horshers.puzzlehuntspringdata.repo.TeamRepository;
 import com.horshers.puzzlehuntspringdata.service.TeamsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -63,8 +69,8 @@ public class TeamsController {
     return teamRepository.save(team);
   }
 
-  // TODO: What response code does this return on successful delete? What does it return when you delete a non-existent
-  // team?
+  // TODO: Spring is returning a 200 regardless of whether the team to be deleted exists or not. That seems a bit
+  // uninformative.
   @DeleteMapping("/springdata/teams/{id}")
   public void deleteTeam(@PathVariable UUID id) {
     teamRepository.deleteById(id);
