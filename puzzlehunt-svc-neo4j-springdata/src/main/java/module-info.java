@@ -5,6 +5,7 @@ open module puzzlehunt.svc.neo4j.springdata {
   requires org.neo4j.driver;
   requires org.neo4j.ogm.drivers.api;
   requires spring.tx;
+  requires spring.core;
   requires spring.web;
   requires spring.beans;
   requires spring.data.commons;

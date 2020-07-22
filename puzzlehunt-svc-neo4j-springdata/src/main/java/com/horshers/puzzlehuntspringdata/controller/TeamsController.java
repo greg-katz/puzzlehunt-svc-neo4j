@@ -8,7 +8,12 @@ import com.horshers.puzzlehuntspringdata.repo.HuntRepository;
 import com.horshers.puzzlehuntspringdata.repo.PersonRepository;
 import com.horshers.puzzlehuntspringdata.repo.PuzzleRepository;
 import com.horshers.puzzlehuntspringdata.repo.TeamRepository;
+import com.horshers.puzzlehuntspringdata.service.TeamsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +36,7 @@ public class TeamsController {
   @Autowired private TeamRepository teamRepository;
   @Autowired private PersonRepository personRepository;
   @Autowired private PuzzleRepository puzzleRepository;
+  @Autowired private TeamsService teamsService;
 
   // TODO: Deal with a non-existent hunt
   // TODO: How do you get the teams to be sorted by name? Can you convince Neo to load the hunt's teams in alphabetical
@@ -115,7 +121,7 @@ public class TeamsController {
   // TODO: Does the default depth of one include the TeamSolvedPuzzles including their Puzzles?
   @GetMapping("/springdata/teams/{id}/solvedpuzzles")
   public List<TeamSolvedPuzzle> findSolvedPuzzles(@PathVariable UUID id) {
-    return teamRepository.findById(id, 2).get().getTeamSolvedPuzzles();
+    return teamRepository.findById(id).get().getTeamSolvedPuzzles();
   }
 
   // TODO: What does returning Optional do, exactly? Does Spring MVC do something cool when the Optional is empty?
@@ -130,14 +136,22 @@ public class TeamsController {
   }
 
   // TODO: Either validate that the team and the solved puzzle belong together or get rid of nesting under /team
-  @PutMapping("/springdata/teams/{teamId}/solvedpuzzles/{solvedPuzzleId")
-  public Optional<TeamSolvedPuzzle> updateSolvedPuzzle(@PathVariable("teamId") Team team, TeamSolvedPuzzle solvedPuzzle) {
-    // Nani???
-    return null;
+  // Also validate that the SolvedPuzzle ID is valid/existing in the current team.
+  @PutMapping("/springdata/teams/{teamId}/solvedpuzzles/{solvedPuzzleId}")
+  @Transactional
+  public Optional<TeamSolvedPuzzle> updateSolvedPuzzle(@PathVariable("teamId") Team team, @PathVariable("solvedPuzzleId") UUID solvedPuzzleId, @RequestBody TeamSolvedPuzzle newSolvedPuzzle) {
+    return teamsService.updateSolvedPuzzle(team, solvedPuzzleId, newSolvedPuzzle);
   }
 
+/*  // TODO: Either validate that the team and the solved puzzle belong together or get rid of nesting under /team
+  @PutMapping("/springdata/teams/{teamId}/solvedpuzzles/{solvedPuzzleId}")
+  public Optional<TeamSolvedPuzzle> updateSolvedPuzzle(@PathVariable("teamId") Team team, @RequestParam MultiValueMap<String, String> solvedPuzzle) {
+    // Nani???
+    return null;
+  }*/
+
   // TODO: Either validate that the team and the solved puzzle belong together or get rid of nesting under /team
-  @DeleteMapping("/springdata/teams/{teamId}/solvedpuzzles/{solvedPuzzleId")
+  @DeleteMapping("/springdata/teams/{teamId}/solvedpuzzles/{solvedPuzzleId}")
   public void deleteSolvedPuzzle(@PathVariable UUID solvedPuzzleId) {
     // Nani???
   }

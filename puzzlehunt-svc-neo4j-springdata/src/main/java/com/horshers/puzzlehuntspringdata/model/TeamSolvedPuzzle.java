@@ -2,6 +2,7 @@ package com.horshers.puzzlehuntspringdata.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.neo4j.ogm.annotation.EndNode;
 import org.neo4j.ogm.annotation.RelationshipEntity;
@@ -20,6 +21,7 @@ public class TeamSolvedPuzzle extends Entity {
   // object graph because Team refers to TeamSolvedPuzzle objects. So, we have to break the cycle as far as Lombok
   // and Jackson are concerned.
   @ToString.Exclude
+  @EqualsAndHashCode.Exclude
   @JsonIgnore
   @StartNode
   Team team;
