@@ -9,7 +9,6 @@ import com.horshers.puzzlehuntspringdata.repo.PersonRepository;
 import com.horshers.puzzlehuntspringdata.repo.PuzzleRepository;
 import com.horshers.puzzlehuntspringdata.repo.TeamRepository;
 import com.horshers.puzzlehuntspringdata.repo.TeamSolvedPuzzleRepository;
-import com.horshers.puzzlehuntspringdata.service.TeamsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +33,6 @@ public class TeamsController {
   @Autowired private TeamSolvedPuzzleRepository teamSolvedPuzzleRepository;
   @Autowired private PersonRepository personRepository;
   @Autowired private PuzzleRepository puzzleRepository;
-  @Autowired private TeamsService teamsService;
 
   // TODO: Deal with a non-existent hunt
   // TODO: How do you get the teams to be sorted by name? Can you convince Neo to load the hunt's teams in alphabetical
@@ -135,9 +133,13 @@ public class TeamsController {
 
   // TODO: Either validate that the team and the solved puzzle belong together or get rid of nesting under /team
   // Also validate that the SolvedPuzzle ID is valid/existing in the current team.
-  @PutMapping("/springdata/teams/{teamId}/solvedpuzzles/{solvedPuzzleId}")
-  public Optional<TeamSolvedPuzzle> updateSolvedPuzzle(@PathVariable("teamId") UUID teamId, @PathVariable("solvedPuzzleId") UUID solvedPuzzleId, @RequestBody TeamSolvedPuzzle newSolvedPuzzle) {
-    return teamsService.updateSolvedPuzzle(teamId, solvedPuzzleId, newSolvedPuzzle);
+  @PutMapping("/springdata/teams/{teamId}/solvedpuzzles/{oldSolvedPuzzle}")
+  public Optional<TeamSolvedPuzzle> updateSolvedPuzzle(@PathVariable("teamId") UUID teamId, @PathVariable("oldSolvedPuzzle") TeamSolvedPuzzle oldSolvedPuzzle, @RequestBody TeamSolvedPuzzle newSolvedPuzzle) {
+    // TODO: Write HORSHERS comment!
+    oldSolvedPuzzle.setStart(newSolvedPuzzle.getStart());
+    oldSolvedPuzzle.setEnd(newSolvedPuzzle.getEnd());
+    oldSolvedPuzzle.setPoints(newSolvedPuzzle.getPoints());
+    return Optional.of(teamSolvedPuzzleRepository.save(oldSolvedPuzzle));
   }
 
 /*  // TODO: Either validate that the team and the solved puzzle belong together or get rid of nesting under /team
