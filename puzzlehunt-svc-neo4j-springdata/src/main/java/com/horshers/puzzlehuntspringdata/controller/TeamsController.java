@@ -8,6 +8,7 @@ import com.horshers.puzzlehuntspringdata.repo.HuntRepository;
 import com.horshers.puzzlehuntspringdata.repo.PersonRepository;
 import com.horshers.puzzlehuntspringdata.repo.PuzzleRepository;
 import com.horshers.puzzlehuntspringdata.repo.TeamRepository;
+import com.horshers.puzzlehuntspringdata.repo.TeamSolvedPuzzleRepository;
 import com.horshers.puzzlehuntspringdata.service.TeamsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -30,6 +31,7 @@ public class TeamsController {
 
   @Autowired private HuntRepository huntRepository;
   @Autowired private TeamRepository teamRepository;
+  @Autowired private TeamSolvedPuzzleRepository teamSolvedPuzzleRepository;
   @Autowired private PersonRepository personRepository;
   @Autowired private PuzzleRepository puzzleRepository;
   @Autowired private TeamsService teamsService;
@@ -124,7 +126,7 @@ public class TeamsController {
   @PostMapping("/springdata/teams/{id}/solvedpuzzles")
   public Optional<TeamSolvedPuzzle> createSolvedPuzzle(@PathVariable("id") Team team, UUID puzzle) {
     TeamSolvedPuzzle solvedPuzzle = new TeamSolvedPuzzle();
-    solvedPuzzle.setStart(LocalTime.now());
+    solvedPuzzle.setStart(ZonedDateTime.now());
     solvedPuzzle.setPuzzle(puzzleRepository.findById(puzzle).get());
     team.getTeamSolvedPuzzles().add(solvedPuzzle);
     // TODO: Refactor to be less of a jerk
@@ -148,6 +150,6 @@ public class TeamsController {
   // TODO: Either validate that the team and the solved puzzle belong together or get rid of nesting under /team
   @DeleteMapping("/springdata/teams/{teamId}/solvedpuzzles/{solvedPuzzleId}")
   public void deleteSolvedPuzzle(@PathVariable UUID solvedPuzzleId) {
-    // Nani???
+    teamSolvedPuzzleRepository.deleteById(solvedPuzzleId);
   }
 }
