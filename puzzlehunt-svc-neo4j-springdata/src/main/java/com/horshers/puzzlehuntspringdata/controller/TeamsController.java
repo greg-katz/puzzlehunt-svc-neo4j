@@ -76,7 +76,7 @@ public class TeamsController {
   }
 
   @GetMapping("/springdata/teams/{id}/captain")
-  public Person getCaptain(@PathVariable("id") Team team) {
+  public Person findCaptain(@PathVariable("id") Team team) {
     return team.getCaptain();
   }
 
