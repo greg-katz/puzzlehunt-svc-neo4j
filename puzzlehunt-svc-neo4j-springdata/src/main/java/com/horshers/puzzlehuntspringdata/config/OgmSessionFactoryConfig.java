@@ -11,6 +11,8 @@ public class OgmSessionFactoryConfig {
 
   @Bean
   SessionFactory sessionFactory() {
+    // Why useNativeTypes(), you ask? See https://stackoverflow.com/questions/58533623 and
+    // https://neo4j.com/docs/ogm-manual/current/reference/#reference:native-property-types:optin
     org.neo4j.ogm.config.Configuration configuration = new org.neo4j.ogm.config.Configuration.Builder()
       .uri("bolt://localhost:7687")
       .credentials("neo4j", "password")
