@@ -75,6 +75,11 @@ public class TeamsController {
     teamRepository.deleteById(id);
   }
 
+  @GetMapping("/springdata/teams/{id}/captain")
+  public Person getCaptain(@PathVariable("id") Team team) {
+    return team.getCaptain();
+  }
+
   // TODO: Validate that the captain exists
   @PutMapping("/springdata/teams/{id}/captain")
   public Person setCaptain(@PathVariable("id") Team team, UUID captainId) {
