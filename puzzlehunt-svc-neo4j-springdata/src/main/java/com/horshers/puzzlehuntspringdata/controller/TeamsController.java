@@ -135,9 +135,8 @@ public class TeamsController {
   // TODO: Either validate that the team and the solved puzzle belong together or get rid of nesting under /team
   // Also validate that the SolvedPuzzle ID is valid/existing in the current team.
   @PutMapping("/springdata/teams/{teamId}/solvedpuzzles/{solvedPuzzleId}")
-  @Transactional
-  public Optional<TeamSolvedPuzzle> updateSolvedPuzzle(@PathVariable("teamId") Team team, @PathVariable("solvedPuzzleId") UUID solvedPuzzleId, @RequestBody TeamSolvedPuzzle newSolvedPuzzle) {
-    return teamsService.updateSolvedPuzzle(team, solvedPuzzleId, newSolvedPuzzle);
+  public Optional<TeamSolvedPuzzle> updateSolvedPuzzle(@PathVariable("teamId") UUID teamId, @PathVariable("solvedPuzzleId") UUID solvedPuzzleId, @RequestBody TeamSolvedPuzzle newSolvedPuzzle) {
+    return teamsService.updateSolvedPuzzle(teamId, solvedPuzzleId, newSolvedPuzzle);
   }
 
 /*  // TODO: Either validate that the team and the solved puzzle belong together or get rid of nesting under /team

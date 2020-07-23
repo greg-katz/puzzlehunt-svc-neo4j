@@ -16,23 +16,24 @@ public class TeamsService {
   @Autowired TeamRepository teamRepository;
 
   @Transactional
-  public Optional<TeamSolvedPuzzle> updateSolvedPuzzle(Team team, UUID solvedPuzzleId, TeamSolvedPuzzle newSolvedPuzzle) {
+  public Optional<TeamSolvedPuzzle> updateSolvedPuzzle(UUID teamId, UUID solvedPuzzleId, TeamSolvedPuzzle newSolvedPuzzle) {
     // Overwriting the changeable properties on the existing object seems like the simplest thing to do when there are only a few of them.
     // If there were a lot of them it'd be simpler to switch things around by setting existing object's relationship properties and ID property
     // on the new object and then replacing the reference in the Team's set with the new instance.
-    TeamSolvedPuzzle existingSolvedPuzzle = team.getTeamSolvedPuzzles().stream().filter(tsp -> tsp.getUuid().equals(solvedPuzzleId)).findFirst().get();
+    Team teamInTransaction = teamRepository.findById(teamId).get();
+    TeamSolvedPuzzle existingSolvedPuzzle = teamInTransaction.getTeamSolvedPuzzles().stream().filter(tsp -> tsp.getUuid().equals(solvedPuzzleId)).findFirst().get();
 
-    team.getTeamSolvedPuzzles().remove(existingSolvedPuzzle);
+/*    team.getTeamSolvedPuzzles().remove(existingSolvedPuzzle);
 
     newSolvedPuzzle.setUuid(existingSolvedPuzzle.getUuid());
     newSolvedPuzzle.setTeam(existingSolvedPuzzle.getTeam());
     newSolvedPuzzle.setPuzzle(existingSolvedPuzzle.getPuzzle());
-    team.getTeamSolvedPuzzles().add(newSolvedPuzzle);
+    team.getTeamSolvedPuzzles().add(newSolvedPuzzle);*/
 
-/*    existingSolvedPuzzle.setStart(newSolvedPuzzle.getStart());
-    existingSolvedPuzzle.setEnd(newSolvedPuzzle.getEnd());*/
+    existingSolvedPuzzle.setStart(newSolvedPuzzle.getStart());
+    existingSolvedPuzzle.setEnd(newSolvedPuzzle.getEnd());
 
-    Team afterSaveTeam = teamRepository.save(team, 1);
+    Team afterSaveTeam = teamRepository.save(teamInTransaction, 2);
     return afterSaveTeam.getTeamSolvedPuzzles().stream().filter(tsp -> tsp.getUuid().equals(solvedPuzzleId)).findFirst();
   }
 }
