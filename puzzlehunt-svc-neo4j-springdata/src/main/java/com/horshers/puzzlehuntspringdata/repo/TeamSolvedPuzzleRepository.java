@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
+// TODO: Is this class necessary?
 @Component
 public interface TeamSolvedPuzzleRepository extends Neo4jRepository<TeamSolvedPuzzle, UUID> {
 }
