@@ -81,6 +81,7 @@ public class TeamsController {
   }
 
   // TODO: Validate that the captain exists
+  // TODO: Implement business rule: If the incoming captain is already on another team, remove them from that team
   @PutMapping("/springdata/teams/{id}/captain")
   public Person setCaptain(@PathVariable("id") Team team, UUID captainId) {
     Person captain = personRepository.findById(captainId).get();
