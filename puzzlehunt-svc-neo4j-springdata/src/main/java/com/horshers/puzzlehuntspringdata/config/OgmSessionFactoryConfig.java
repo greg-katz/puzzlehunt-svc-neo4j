@@ -14,6 +14,7 @@ public class OgmSessionFactoryConfig {
     org.neo4j.ogm.config.Configuration configuration = new org.neo4j.ogm.config.Configuration.Builder()
       .uri("bolt://localhost:7687")
       .credentials("neo4j", "password")
+      .useNativeTypes()
       .build();
 
     return new SessionFactory(configuration, "com.horshers.puzzlehuntspringdata", "com.horshers.puzzlehuntogm");
