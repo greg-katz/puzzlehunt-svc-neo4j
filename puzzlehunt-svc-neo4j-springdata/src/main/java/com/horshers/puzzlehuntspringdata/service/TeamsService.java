@@ -15,7 +15,7 @@ public class TeamsService {
 
   @Autowired TeamRepository teamRepository;
 
-    @Transactional
+  @Transactional
   public Optional<TeamSolvedPuzzle> updateSolvedPuzzle(UUID teamId, UUID solvedPuzzleId, TeamSolvedPuzzle newSolvedPuzzle) {
     // Overwriting the changeable properties on the existing object seems like the simplest thing to do when there are only a few of them.
     // If there were a lot of them it'd be simpler to switch things around by setting existing object's relationship properties and ID property
@@ -27,7 +27,7 @@ public class TeamsService {
     existingSolvedPuzzle.setEnd(newSolvedPuzzle.getEnd());
     existingSolvedPuzzle.setPoints(newSolvedPuzzle.getPoints());
 
-  Team afterSaveTeam = teamRepository.save(teamInTransaction, 1);
+    Team afterSaveTeam = teamRepository.save(teamInTransaction, 1);
     return afterSaveTeam.getTeamSolvedPuzzles().stream().filter(tsp -> tsp.getUuid().equals(solvedPuzzleId)).findFirst();
-}
+  }
 }
