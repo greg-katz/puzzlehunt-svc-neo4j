@@ -87,8 +87,7 @@ public class TeamService {
     return teamRepository.save(team).findSolvedPuzzle(puzzle).orElseThrow(() -> new RuntimeException("Should never happen!"));
   }
 
-  /*
-     There's a question worth considering here on whether it's better to set properties on the oldSolvedPuzzle from
+  /* There's a question worth considering here on whether it's better to set properties on the oldSolvedPuzzle from
      the newSolvedPuzzle or the other way around. On their way in, "oldSolvedPuzzle" is the TeamSolvedPuzzle instance
      that we pulled from the database and "newSolvedPuzzle" contains the relationship attributes we want to update
      coming from the request.
@@ -102,19 +101,18 @@ public class TeamService {
      fields in the newSolvedPuzzle before saving, which makes sense, but the real trick is that you also need to replace
      the circular reference of TeamSolvedPuzzle->Team->TeamSolvedPuzzle to be the newSolvedPuzzle instance, or else
      the oldSolvedPuzzle instance will still be in the object graph that's being saved and the save won't work as you
-     expect.
-*/
+     expect. */
   public TeamSolvedPuzzle updateSolvedPuzzle(TeamSolvedPuzzle oldSolvedPuzzle, TeamSolvedPuzzle newSolvedPuzzle) {
 
 
    /*
      What the code would look like if we saved the oldSolvedPuzzle instance instad of newSolvedPuzzle:
 
-    oldSolvedPuzzle.setStart(newSolvedPuzzle.getStart());
-    oldSolvedPuzzle.setEnd(newSolvedPuzzle.getEnd());
-    oldSolvedPuzzle.setPoints(newSolvedPuzzle.getPoints());
+      oldSolvedPuzzle.setStart(newSolvedPuzzle.getStart());
+      oldSolvedPuzzle.setEnd(newSolvedPuzzle.getEnd());
+      oldSolvedPuzzle.setPoints(newSolvedPuzzle.getPoints());
 
-    return teamSolvedPuzzleRepository.save(oldSolvedPuzzle);
+      return teamSolvedPuzzleRepository.save(oldSolvedPuzzle);
     */
 
     Team team = oldSolvedPuzzle.getTeam();
