@@ -20,9 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -85,26 +83,13 @@ public class TeamsController {
   // TODO: Implement business rule: If the incoming captain is already on another team, remove them from that team
   @PutMapping("/springdata/teams/{id}/captain")
   public Person setCaptain(@PathVariable("id") Team team, @RequestBody UUID captainId) {
-    Person captain = personRepository.findById(captainId).get();
-    team.setCaptain(captain);
-    team.getPlayers().add(captain);
-    return teamRepository.save(team).getCaptain();
+    return teamService.setCaptain(team, captainId);
   }
 
   // TODO: Implement business rule: When the captain is deleted, make one of the other players on the team the captain
   @DeleteMapping("/springdata/teams/{id}/captain")
-  public Team deleteCaptain(@PathVariable("id") Team team) {
-    Person oldCaptain = team.getCaptain();
-
-    // When the captain resigns, if the team has any other players, promote one of them to be the captain
-    Person newCaptain = team.getPlayers().stream()
-      .filter(p -> !p.getUuid().equals(oldCaptain.getUuid()))
-      .findFirst()
-      .orElse(null);
-
-    team.setCaptain(newCaptain);
-
-    return teamRepository.save(team);
+  public Team removeCaptain(@PathVariable("id") Team team) {
+    return teamService.removeCaptain(team);
   }
 
   // TODO: Turn a null team into a 404 (any chance an @NonNull annotation can do the trick?)
@@ -147,18 +132,11 @@ public class TeamsController {
     return teamRepository.findById(id).get().getTeamSolvedPuzzles();
   }
 
-  // TODO: What does returning Optional do, exactly? Does Spring MVC do something cool when the Optional is empty?
   // Create a solved relationship between Team 1 and the "lungs" puzzle:
   // curl -X POST -H 'Content-Type: application/json' -i http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/solvedpuzzles --data '"9e03b12a-dc65-485f-af28-9c5251a5c6f5"'
   @PostMapping("/springdata/teams/{id}/solvedpuzzles")
-  public Optional<TeamSolvedPuzzle> createSolvedPuzzle(@PathVariable("id") Team team, @RequestBody UUID puzzleId) {
-    TeamSolvedPuzzle solvedPuzzle = new TeamSolvedPuzzle();
-    solvedPuzzle.setStart(ZonedDateTime.now());
-    solvedPuzzle.setPuzzle(puzzleRepository.findById(puzzleId).get());
-    solvedPuzzle.setTeam(team);
-    team.getTeamSolvedPuzzles().add(solvedPuzzle);
-    // TODO: Refactor to be less of a jerk
-    return teamRepository.save(team).getTeamSolvedPuzzles().stream().filter(tsp -> tsp.getPuzzle().getUuid().equals(puzzleId)).findFirst();
+  public TeamSolvedPuzzle createSolvedPuzzle(@PathVariable("id") Team team, @RequestBody UUID puzzleId) {
+    return teamService.createSolvedPuzzle(team, puzzleId);
   }
 
   // TODO: Either validate that the team and the solved puzzle belong together or get rid of nesting under /team
@@ -167,7 +145,8 @@ public class TeamsController {
   // curl -X PUT -H 'Content-Type: application/json' -i http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/solvedpuzzles/214941d3-98d8-4378-b9f1-c69490e59e26 --data '{"uuid":"214941d3-98d8-4378-b9f1-c69490e59e26","start":"2015-06-24T09:32:01.001+01:00","end":"2015-06-24T11:52:01.001+01:00","points":"551"}'
   @PutMapping("/springdata/teams/{teamId}/solvedpuzzles/{oldSolvedPuzzle}")
   public TeamSolvedPuzzle updateSolvedPuzzle(@PathVariable("teamId") UUID teamId, @PathVariable("oldSolvedPuzzle") TeamSolvedPuzzle oldSolvedPuzzle, @RequestBody TeamSolvedPuzzle newSolvedPuzzle) {
-    // TODO: Write HORSHERS comment!
+    // TODO: Write HORSHERS comment! The gist: Fiddling with the old TSP's properties and then saving the old TSP does what you want;
+    // setting the new TSP's team and puzzle and then saving the new TSP leads to madness
     oldSolvedPuzzle.setStart(newSolvedPuzzle.getStart());
     oldSolvedPuzzle.setEnd(newSolvedPuzzle.getEnd());
     oldSolvedPuzzle.setPoints(newSolvedPuzzle.getPoints());

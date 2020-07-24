@@ -5,7 +5,10 @@ import lombok.EqualsAndHashCode;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.neo4j.ogm.annotation.Relationship.INCOMING;
 
@@ -14,14 +17,27 @@ import static org.neo4j.ogm.annotation.Relationship.INCOMING;
 @EqualsAndHashCode(callSuper = true)
 public class Team extends Entity {
 
-  String name;
+  private String name;
 
   @Relationship(type = "CAPTAIN_OF", direction = INCOMING)
-  Person captain;
+  private Person captain;
 
   @Relationship(type = "MEMBER_OF", direction = INCOMING)
-  List<Person> players;
+  private List<Person> players;
 
   @Relationship("SOLVED")
-  List<TeamSolvedPuzzle> teamSolvedPuzzles;
+  private List<TeamSolvedPuzzle> teamSolvedPuzzles;
+
+  public void addSolvedPuzzle(TeamSolvedPuzzle solvedPuzzle) {
+    if (teamSolvedPuzzles == null) teamSolvedPuzzles = new ArrayList<>();
+    teamSolvedPuzzles.add(solvedPuzzle);
+  }
+
+  public Optional<TeamSolvedPuzzle> findSolvedPuzzle(UUID puzzleId) {
+    if (teamSolvedPuzzles == null) return Optional.empty();
+
+    return teamSolvedPuzzles.stream()
+      .filter(tsp -> tsp.getPuzzle().getUuid().equals(puzzleId))
+      .findFirst();
+  }
 }
