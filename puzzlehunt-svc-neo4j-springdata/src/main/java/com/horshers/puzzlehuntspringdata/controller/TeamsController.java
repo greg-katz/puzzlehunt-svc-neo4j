@@ -2,6 +2,7 @@ package com.horshers.puzzlehuntspringdata.controller;
 
 import com.horshers.puzzlehuntspringdata.model.Hunt;
 import com.horshers.puzzlehuntspringdata.model.Person;
+import com.horshers.puzzlehuntspringdata.model.Puzzle;
 import com.horshers.puzzlehuntspringdata.model.Team;
 import com.horshers.puzzlehuntspringdata.model.TeamSolvedPuzzle;
 import com.horshers.puzzlehuntspringdata.repo.HuntRepository;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -133,10 +135,15 @@ public class TeamsController {
   }
 
   // Create a solved relationship between Team 1 and the "lungs" puzzle:
-  // curl -X POST -H 'Content-Type: application/json' -i http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/solvedpuzzles --data '"9e03b12a-dc65-485f-af28-9c5251a5c6f5"'
+  // TODO: Something a bit weird here... The DomainClassConverter works with @PathVariable and @RequestParam but not @RequestBody, so the expected input is form-encoded because those
+  // go into a bucket that Spring can pull with @RequestParam. If we were a bit more serious we may want to investigate whether it's possible to get the DomainClassConverter to work for request
+  // bodies where the body is a single ID string.
+  // curl -X POST -H 'Content-Type: application/x-www-form-urlencoded' -i http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/solvedpuzzles --data puzzle=9e03b12a-dc65-485f-af28-9c5251a5c6f5
   @PostMapping("/springdata/teams/{id}/solvedpuzzles")
-  public TeamSolvedPuzzle createSolvedPuzzle(@PathVariable("id") Team team, @RequestBody UUID puzzleId) {
-    return teamService.createSolvedPuzzle(team, puzzleId);
+  public TeamSolvedPuzzle createSolvedPuzzle(@PathVariable("id") Team team, @RequestParam Puzzle puzzle) {
+    if (team == null) throw new ResponseStatusException(NOT_FOUND, "Team not found");
+    if (puzzle == null) throw new ResponseStatusException(NOT_FOUND, "Team not found");
+    return teamService.createSolvedPuzzle(team, puzzle);
   }
 
   // TODO: Either validate that the team and the solved puzzle belong together or get rid of nesting under /team

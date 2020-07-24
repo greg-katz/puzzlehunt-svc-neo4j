@@ -82,13 +82,12 @@ public class TeamService {
   }
 
   @Transactional
-  public TeamSolvedPuzzle createSolvedPuzzle(Team team, UUID puzzleId) {
-    Puzzle puzzle = puzzleRepository.findById(puzzleId).orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Puzzle not found"));
+  public TeamSolvedPuzzle createSolvedPuzzle(Team team, Puzzle puzzle) {
     TeamSolvedPuzzle solvedPuzzle = new TeamSolvedPuzzle();
     solvedPuzzle.setStart(ZonedDateTime.now());
     solvedPuzzle.setTeam(team);
     solvedPuzzle.setPuzzle(puzzle);
     team.addSolvedPuzzle(solvedPuzzle); // TODO: What if the team already has a TSP for this puzzle?
-    return teamRepository.save(team).findSolvedPuzzle(puzzleId).orElseThrow(() -> new RuntimeException("Should never happen!"));
+    return teamRepository.save(team).findSolvedPuzzle(puzzle).orElseThrow(() -> new RuntimeException("Should never happen!"));
   }
 }

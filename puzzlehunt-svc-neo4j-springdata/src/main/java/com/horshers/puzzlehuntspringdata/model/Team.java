@@ -33,11 +33,11 @@ public class Team extends Entity {
     teamSolvedPuzzles.add(solvedPuzzle);
   }
 
-  public Optional<TeamSolvedPuzzle> findSolvedPuzzle(UUID puzzleId) {
+  public Optional<TeamSolvedPuzzle> findSolvedPuzzle(Puzzle puzzle) {
     if (teamSolvedPuzzles == null) return Optional.empty();
 
     return teamSolvedPuzzles.stream()
-      .filter(tsp -> tsp.getPuzzle().getUuid().equals(puzzleId))
+      .filter(tsp -> tsp.getPuzzle().equals(puzzle))
       .findFirst();
   }
 }
