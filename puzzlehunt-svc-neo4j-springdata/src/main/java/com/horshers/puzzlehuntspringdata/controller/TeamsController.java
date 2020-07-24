@@ -38,7 +38,6 @@ public class TeamsController {
   @Autowired private PuzzleRepository puzzleRepository;
   @Autowired private TeamService teamService;
 
-  // TODO: Deal with a non-existent hunt
   // TODO: How do you get the teams to be sorted by name? Can you convince Neo to load the hunt's teams in alphabetical
   // order?
   @GetMapping("/springdata/hunts/{id}/teams")
