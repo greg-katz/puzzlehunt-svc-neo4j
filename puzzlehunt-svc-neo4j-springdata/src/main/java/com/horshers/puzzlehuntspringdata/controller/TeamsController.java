@@ -151,7 +151,6 @@ public class TeamsController {
   }
 
   // TODO: Should we validate that the player exists?
-  // TODO: If this argument resolution magic works, is the player inside the team reference-equal to the player param?
   // If it isn't reference-equal, does it become reference-equal by adding @Transaction to this method?
   // Delete person 4 from team 1:
   // curl -X DELETE -H 'Content-Type: application/json' -i http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/players/5efd7a47-98f7-4c4d-87e9-ba7434c4afa6
