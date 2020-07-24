@@ -9,14 +9,9 @@ import com.horshers.puzzlehuntspringdata.repo.PersonRepository;
 import com.horshers.puzzlehuntspringdata.repo.PuzzleRepository;
 import com.horshers.puzzlehuntspringdata.repo.TeamRepository;
 import com.horshers.puzzlehuntspringdata.repo.TeamSolvedPuzzleRepository;
+import com.horshers.puzzlehuntspringdata.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -33,6 +28,7 @@ public class TeamsController {
   @Autowired private TeamSolvedPuzzleRepository teamSolvedPuzzleRepository;
   @Autowired private PersonRepository personRepository;
   @Autowired private PuzzleRepository puzzleRepository;
+  @Autowired private TeamService teamService;
 
   // TODO: Deal with a non-existent hunt
   // TODO: How do you get the teams to be sorted by name? Can you convince Neo to load the hunt's teams in alphabetical
@@ -106,57 +102,61 @@ public class TeamsController {
   // TODO: Should we validate that the player exists?
   // TODO: If this argument resolution magic works, is the player inside the team reference-equal to the player param?
   // If it isn't reference-equal, does it become reference-equal by adding @Transaction to this method?
+  // Delete person 4 from team 1:
+  // curl -X DELETE -H 'Content-Type: application/json' -i http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/players/5efd7a47-98f7-4c4d-87e9-ba7434c4afa6
   @DeleteMapping("/springdata/teams/{teamId}/players/{playerId}")
-  public List<Person> deletePlayer(@PathVariable("teamId") Team team, @PathVariable("playerId") Person player) {
-    team.getPlayers().remove(player);
-    return teamRepository.save(team).getPlayers();
+  public List<Person> deletePlayer(@PathVariable("teamId") UUID teamId, @PathVariable("playerId") UUID playerId) {
+    return teamService.deletePlayer(teamId, playerId);
   }
 
   // TODO: Is there a way to get Spring's argument resolution to populate a List<Person> instead of List<UUID>?
+  // Add person 3 and person 4 to team 1:
+  // curl -X PUT -H 'Content-Type: application/json' -i http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/players --data '["9434d65c-a693-4dac-95fd-5496ebd32650", "5efd7a47-98f7-4c4d-87e9-ba7434c4afa6"]'
   @PutMapping("/springdata/teams/{id}/players")
-  public List<Person> setPlayers(@PathVariable("id") Team team, List<UUID> players) {
-    team.setPlayers(toList(personRepository.findAllById(players)));
-    return teamRepository.save(team).getPlayers();
+  public List<Person> setPlayers(@PathVariable("id") UUID teamId, @RequestBody List<UUID> players) {
+    return teamService.setPlayers(teamId, players);
   }
 
   // TODO: Validate that the team exists
-  // TODO: Does the default depth of one include the TeamSolvedPuzzles including their Puzzles?
+  // Get solved puzzled of Team 1:
+  // curl -X GET -H 'Content-Type: application/json' -i http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/solvedpuzzles
   @GetMapping("/springdata/teams/{id}/solvedpuzzles")
   public List<TeamSolvedPuzzle> findSolvedPuzzles(@PathVariable UUID id) {
     return teamRepository.findById(id).get().getTeamSolvedPuzzles();
   }
 
   // TODO: What does returning Optional do, exactly? Does Spring MVC do something cool when the Optional is empty?
+  // Create a solved relationship between Team 1 and the "lungs" puzzle:
+  // curl -X POST -H 'Content-Type: application/json' -i http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/solvedpuzzles --data '"9e03b12a-dc65-485f-af28-9c5251a5c6f5"'
   @PostMapping("/springdata/teams/{id}/solvedpuzzles")
-  public Optional<TeamSolvedPuzzle> createSolvedPuzzle(@PathVariable("id") Team team, UUID puzzle) {
+  public Optional<TeamSolvedPuzzle> createSolvedPuzzle(@PathVariable("id") Team team, @RequestBody UUID puzzleId) {
     TeamSolvedPuzzle solvedPuzzle = new TeamSolvedPuzzle();
     solvedPuzzle.setStart(ZonedDateTime.now());
-    solvedPuzzle.setPuzzle(puzzleRepository.findById(puzzle).get());
+    solvedPuzzle.setPuzzle(puzzleRepository.findById(puzzleId).get());
+    solvedPuzzle.setTeam(team);
     team.getTeamSolvedPuzzles().add(solvedPuzzle);
     // TODO: Refactor to be less of a jerk
-    return teamRepository.save(team).getTeamSolvedPuzzles().stream().filter(tsp -> tsp.getPuzzle().getUuid().equals(puzzle)).findFirst();
+    return teamRepository.save(team).getTeamSolvedPuzzles().stream().filter(tsp -> tsp.getPuzzle().getUuid().equals(puzzleId)).findFirst();
   }
 
   // TODO: Either validate that the team and the solved puzzle belong together or get rid of nesting under /team
-  // Also validate that the SolvedPuzzle ID is valid/existing in the current team.
+  // TODO: Also validate that the SolvedPuzzle ID is valid/existing in the current team.
+  // Update the TeamSolvedPuzzle between Team 1 and the hearts puzzle with some new dates and points values:
+  // curl -X PUT -H 'Content-Type: application/json' -i http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/solvedpuzzles/214941d3-98d8-4378-b9f1-c69490e59e26 --data '{"uuid":"214941d3-98d8-4378-b9f1-c69490e59e26","start":"2015-06-24T09:32:01.001+01:00","end":"2015-06-24T11:52:01.001+01:00","points":"551"}'
   @PutMapping("/springdata/teams/{teamId}/solvedpuzzles/{oldSolvedPuzzle}")
-  public Optional<TeamSolvedPuzzle> updateSolvedPuzzle(@PathVariable("teamId") UUID teamId, @PathVariable("oldSolvedPuzzle") TeamSolvedPuzzle oldSolvedPuzzle, @RequestBody TeamSolvedPuzzle newSolvedPuzzle) {
+  public TeamSolvedPuzzle updateSolvedPuzzle(@PathVariable("teamId") UUID teamId, @PathVariable("oldSolvedPuzzle") TeamSolvedPuzzle oldSolvedPuzzle, @RequestBody TeamSolvedPuzzle newSolvedPuzzle) {
     // TODO: Write HORSHERS comment!
     oldSolvedPuzzle.setStart(newSolvedPuzzle.getStart());
     oldSolvedPuzzle.setEnd(newSolvedPuzzle.getEnd());
     oldSolvedPuzzle.setPoints(newSolvedPuzzle.getPoints());
-    return Optional.of(teamSolvedPuzzleRepository.save(oldSolvedPuzzle));
+    return teamSolvedPuzzleRepository.save(oldSolvedPuzzle);
   }
 
-/*  // TODO: Either validate that the team and the solved puzzle belong together or get rid of nesting under /team
-  @PutMapping("/springdata/teams/{teamId}/solvedpuzzles/{solvedPuzzleId}")
-  public Optional<TeamSolvedPuzzle> updateSolvedPuzzle(@PathVariable("teamId") Team team, @RequestParam MultiValueMap<String, String> solvedPuzzle) {
-    // Nani???
-    return null;
-  }*/
 
   // TODO: Either validate that the team and the solved puzzle belong together or get rid of nesting under /team
   @DeleteMapping("/springdata/teams/{teamId}/solvedpuzzles/{solvedPuzzleId}")
+  // Delete the TeamSolvedPuzzle between Team 1 and the hearts puzzle:
+  // curl -X DELETE -H 'Content-Type: application/json' -i http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/solvedpuzzles/214941d3-98d8-4378-b9f1-c69490e59e26
   public void deleteSolvedPuzzle(@PathVariable UUID solvedPuzzleId) {
     teamSolvedPuzzleRepository.deleteById(solvedPuzzleId);
   }

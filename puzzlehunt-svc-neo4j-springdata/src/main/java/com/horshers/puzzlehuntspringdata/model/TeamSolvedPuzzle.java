@@ -17,7 +17,7 @@ public class TeamSolvedPuzzle extends Entity {
 
   ZonedDateTime start;
   ZonedDateTime end;
-  Integer points;
+  int points;
 
   // Relationship entities are required to have both @StartNode and @EndNode fields, but this causes a cycle in the
   // object graph because Team refers to TeamSolvedPuzzle objects. So, we have to break the cycle as far as Lombok
