@@ -11,7 +11,13 @@ import com.horshers.puzzlehuntspringdata.repo.TeamRepository;
 import com.horshers.puzzlehuntspringdata.repo.TeamSolvedPuzzleRepository;
 import com.horshers.puzzlehuntspringdata.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -79,11 +85,27 @@ public class TeamsController {
   // TODO: Validate that the captain exists
   // TODO: Implement business rule: If the incoming captain is already on another team, remove them from that team
   @PutMapping("/springdata/teams/{id}/captain")
-  public Person setCaptain(@PathVariable("id") Team team, UUID captainId) {
+  public Person setCaptain(@PathVariable("id") Team team, @RequestBody UUID captainId) {
     Person captain = personRepository.findById(captainId).get();
     team.setCaptain(captain);
     team.getPlayers().add(captain);
     return teamRepository.save(team).getCaptain();
+  }
+
+  // TODO: Implement business rule: When the captain is deleted, make one of the other players on the team the captain
+  @DeleteMapping("/springdata/teams/{id}/captain")
+  public Team deleteCaptain(@PathVariable("id") Team team) {
+    Person oldCaptain = team.getCaptain();
+
+    // When the captain resigns, if the team has any other players, promote one of them to be the captain
+    Person newCaptain = team.getPlayers().stream()
+      .filter(p -> !p.getUuid().equals(oldCaptain.getUuid()))
+      .findFirst()
+      .orElse(null);
+
+    team.setCaptain(newCaptain);
+
+    return teamRepository.save(team);
   }
 
   // TODO: Turn a null team into a 404 (any chance an @NonNull annotation can do the trick?)
@@ -151,7 +173,6 @@ public class TeamsController {
     oldSolvedPuzzle.setPoints(newSolvedPuzzle.getPoints());
     return teamSolvedPuzzleRepository.save(oldSolvedPuzzle);
   }
-
 
   // TODO: Either validate that the team and the solved puzzle belong together or get rid of nesting under /team
   @DeleteMapping("/springdata/teams/{teamId}/solvedpuzzles/{solvedPuzzleId}")
