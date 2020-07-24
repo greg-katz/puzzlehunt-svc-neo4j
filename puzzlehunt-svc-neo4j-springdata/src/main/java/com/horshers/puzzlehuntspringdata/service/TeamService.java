@@ -34,7 +34,6 @@ public class TeamService {
     return hunt.findTeam(team).orElseThrow(() -> new RuntimeException("Should never happen!"));
   }
 
-  @Transactional
   public List<Person> addPlayers(UUID teamId, List<UUID> playerIds) {
     Team team = teamRepository.findById(teamId).get();
     List<Person> players = toList(personRepository.findAllById(playerIds));
@@ -43,14 +42,12 @@ public class TeamService {
     return teamRepository.save(team).getPlayers();
   }
 
-  @Transactional
   public List<Person> deletePlayer(UUID teamId, UUID playerId) {
     Team team = teamRepository.findById(teamId).get();
     team.setPlayers(team.getPlayers().stream().filter(player -> !player.getUuid().equals(playerId)).collect(Collectors.toList()));
     return teamRepository.save(team).getPlayers();
   }
 
-  @Transactional
   public List<Person> setPlayers(UUID teamId, List<UUID> playerIds) {
     Team team = teamRepository.findById(teamId).get();
     Iterable<Person> players = personRepository.findAllById(playerIds);

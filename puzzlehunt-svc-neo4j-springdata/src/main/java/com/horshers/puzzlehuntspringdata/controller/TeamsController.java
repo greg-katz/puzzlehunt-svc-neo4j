@@ -132,7 +132,7 @@ public class TeamsController {
   }
 
   // TODO: Is there a way to get Spring's argument resolution to populate a List<Person> instead of List<UUID>?
-  // Add person 3 and person 4 to team 1:
+  // Set team 1's players to person 3 and person 4:
   // curl -X PUT -H 'Content-Type: application/json' -i http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/players --data '["9434d65c-a693-4dac-95fd-5496ebd32650", "5efd7a47-98f7-4c4d-87e9-ba7434c4afa6"]'
   @PutMapping("/springdata/teams/{id}/players")
   public List<Person> setPlayers(@PathVariable("id") UUID teamId, @RequestBody List<UUID> players) {
