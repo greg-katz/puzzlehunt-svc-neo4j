@@ -43,6 +43,17 @@ public class TeamsController {
   // order?
   @GetMapping("/springdata/hunts/{id}/teams")
   public List<Team> findAllTeams(@PathVariable("id") Hunt hunt) {
+    // TODO: This null check will never be called because the DomainClassConverter unfortunately returns the id
+    // path variable's value as a string in the event that the identified hunt doesn't exist, instead of returning
+    // null. This causes an IllegalStateException to be thrown before the body of this method is called.
+    // HORSHERS ALERT: Mike *didn't* see this behavior consistently. Speculation: This *might* be due to a cache of
+    // converters in GenericConversionService. DomainClassConverter has an inner converter class that returns null when
+    // the domain object is not found. Mike observed that, when he saw this method be entered with a null hunt arg,
+    // a breakpoint in the DomainClassConverter's outer convert method *didn't* get hit. Greg wasn't able to repro.
+    // Aside from the mystery of why the same code behaved differently on two different machines, why does the
+    // DomainClassConverter *want* to return the passed-in string? Shouldn't it return the null that its inner
+    // converter returned?
+    //if (hunt == null) throw new ResponseStatusException(NOT_FOUND, "Hunt not found");
     return hunt.getTeams();
   }
 
@@ -52,7 +63,9 @@ public class TeamsController {
   }
 
   // TODO: It would be cool if the team required a captain to be created at the same time
-  // TODO: Protect the hunt from accepting a new team with the same name as an existing team
+  // TODO: Protect the hunt from accepting a new team with the same name as an existing team (note that team name
+  // uniqueness *across* hunts is not guaranteed, so enforcing this rule isn't as simple as adding a Neo4j uniqueness
+  // constraint on the name property)
   @PostMapping("/springdata/hunts/{huntId}/teams")
   public Team createTeam(@PathVariable("huntId") Hunt hunt, @RequestBody Team team) {
     if (hunt == null) throw new ResponseStatusException(NOT_FOUND, "Hunt not found");
