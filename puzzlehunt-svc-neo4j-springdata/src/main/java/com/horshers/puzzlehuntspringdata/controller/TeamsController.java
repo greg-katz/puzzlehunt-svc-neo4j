@@ -115,10 +115,11 @@ public class TeamsController {
   }
 
   // TODO: Should we validate that the players exist?
-  @PostMapping("/springdata/teams/{id}/players")
-  public List<Person> addPlayers(@PathVariable("id") Team team, List<UUID> players) {
-    team.getPlayers().addAll(toList(personRepository.findAllById(players)));
-    return teamRepository.save(team).getPlayers();
+  // Add persons 3 and 4 to team 1:
+  // curl -X POST -H 'Content-Type: application/json' -i http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/players --data '["9434d65c-a693-4dac-95fd-5496ebd32650", "5efd7a47-98f7-4c4d-87e9-ba7434c4afa6"]'
+  @PostMapping("/springdata/teams/{teamId}/players")
+  public List<Person> addPlayers(@PathVariable("teamId") UUID teamId, @RequestBody List<UUID> playerIds) {
+    return teamService.addPlayers(teamId, playerIds);
   }
 
   // TODO: Should we validate that the player exists?
