@@ -12,6 +12,7 @@ import java.time.ZonedDateTime;
 
 @RelationshipEntity(type = "SOLVED")
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class TeamSolvedPuzzle extends Entity {
 
   ZonedDateTime start;
