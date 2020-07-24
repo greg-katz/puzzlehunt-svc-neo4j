@@ -38,6 +38,36 @@ public class TeamsController {
   @Autowired private PuzzleRepository puzzleRepository;
   @Autowired private TeamService teamService;
 
+  /*
+    Random musings about things we decided while writing this:
+
+    1. In our data model teams are owned by hunts. That leads pretty naturally to at least some of these endpoints
+    being nested under /hunts/{huntId}, because the operation you're doing on the team is in the context of that hunt.
+    Create team is a good example of this - we model the hunt's team's collection at /hunts/{huntId}/teams and do a POST
+    to create a new team for that hunt. Very nice and very RESTful.
+
+    But what's not as clear is what to do endpoints that update or delete a team - ones where the team already exists.
+    Team objects may be conceptually owned by hunts but they still have unique database IDs. If you made the rule that
+    all team endpoints should be nested under their hunts you'd wind up with a lot of huntId path variables that don't
+    even get used in their endpoints - or if they do get used it would only be to validate that it's the correct huntId
+    for that team, a problem you wouldn't have if the team endpoint weren't nested under the hunt in the first place.
+    This always-nesting idea also seems dubious when you start thinking about a deeper hierarchy, if our data model had entities that are
+    owned by the team and by proxy also the hunt.
+
+    What we've settled on here as a debatable compromise is:
+    1. Nest the endpoint under the parent if it obviously makes sense to do so (e.g. find the teams for this hunt,
+    create a team in this hunt - any operation that is about teams but that doesn't involve passing around teamIds.)
+    2. Don't nest the endpoint under the parent otherwise. If it's an operation about a specific Team, for example, it
+    can just be at /teams/{teamId}.
+
+    A side note here is that we did choose to keep the methods for the related TeamSolvedPuzzle relationship entity here
+    even though it has its own repository and therefore could have its own controller/service. The argument is that
+    conceptually the TeamSolvedPuzzle actions are still about updating the team, and that the object itself is a bit
+    of a goofy concept that doesn't stand on its own and therefore doesn't deserve full top-level treatment. But
+    TeamSolvedPuzzles also have unique IDs and we still chose not to nest their endpoint under team for the actions that
+    refer to a TeamSolvedPuzzle ID, so they do wind up with a few top-level REST endpoints. This is another debatable
+    area. */
+
   // TODO: How do you get the teams to be sorted by name? Can you convince Neo to load the hunt's teams in alphabetical
   // order?
   @GetMapping("/springdata/hunts/{id}/teams")
@@ -158,19 +188,17 @@ public class TeamsController {
     return teamService.createSolvedPuzzle(team, puzzle);
   }
 
-  // TODO: Either validate that the team and the solved puzzle belong together or get rid of nesting under /team
   // TODO: Also validate that the SolvedPuzzle ID is valid/existing in the current team.
   // Update the TeamSolvedPuzzle between Team 1 and the hearts puzzle with some new dates and points values:
-  // curl -X PUT -H 'Content-Type: application/json' -i http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/solvedpuzzles/214941d3-98d8-4378-b9f1-c69490e59e26 --data '{"uuid":"214941d3-98d8-4378-b9f1-c69490e59e26","start":"2015-06-24T09:32:01.001+01:00","end":"2015-06-24T11:52:01.001+01:00","points":"551"}'
-  @PutMapping("/springdata/teams/{teamId}/solvedpuzzles/{oldSolvedPuzzle}")
-  public TeamSolvedPuzzle updateSolvedPuzzle(@PathVariable("teamId") UUID teamId, @PathVariable("oldSolvedPuzzle") TeamSolvedPuzzle oldSolvedPuzzle, @RequestBody TeamSolvedPuzzle newSolvedPuzzle) {
+  // curl -X PUT -H 'Content-Type: application/json' -i http://localhost:8082/springdata/solvedpuzzles/214941d3-98d8-4378-b9f1-c69490e59e26 --data '{"uuid":"214941d3-98d8-4378-b9f1-c69490e59e26","start":"2015-06-24T09:32:01.001+01:00","end":"2015-06-24T11:52:01.001+01:00","points":"551"}'
+  @PutMapping("/springdata/solvedpuzzles/{oldSolvedPuzzleId}")
+  public TeamSolvedPuzzle updateSolvedPuzzle(@PathVariable("oldSolvedPuzzleId") TeamSolvedPuzzle oldSolvedPuzzle, @RequestBody TeamSolvedPuzzle newSolvedPuzzle) {
     return teamService.updateSolvedPuzzle(oldSolvedPuzzle, newSolvedPuzzle);
   }
 
-  // TODO: Either validate that the team and the solved puzzle belong together or get rid of nesting under /team
-  @DeleteMapping("/springdata/teams/{teamId}/solvedpuzzles/{solvedPuzzleId}")
+  @DeleteMapping("/springdata/solvedpuzzles/{solvedPuzzleId}")
   // Delete the TeamSolvedPuzzle between Team 1 and the hearts puzzle:
-  // curl -X DELETE -H 'Content-Type: application/json' -i http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/solvedpuzzles/214941d3-98d8-4378-b9f1-c69490e59e26
+  // curl -X DELETE -H 'Content-Type: application/json' -i http://localhost:8082/springdata/solvedpuzzles/214941d3-98d8-4378-b9f1-c69490e59e26
   public void deleteSolvedPuzzle(@PathVariable UUID solvedPuzzleId) {
     teamSolvedPuzzleRepository.deleteById(solvedPuzzleId);
   }
