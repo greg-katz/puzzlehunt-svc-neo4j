@@ -18,13 +18,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.apache.commons.collections4.IterableUtils.toList;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController("spring-data-teams-controller")
 public class TeamsController {
@@ -49,16 +51,13 @@ public class TeamsController {
     return team;
   }
 
-  // TODO: Validate that the ID is null
   // TODO: It would be cool if the team required a captain to be created at the same time
   // TODO: Protect the hunt from accepting a new team with the same name as an existing team
-  @PostMapping("/springdata/hunts/{id}/teams")
-  public Team createTeam(@PathVariable("id") Hunt hunt, @RequestBody Team team) {
-    team = teamRepository.save(team);
-    hunt.getTeams().add(team);
-    // TODO: Refactor to be less of a jerk
-    UUID teamId = team.getUuid();
-    return huntRepository.save(hunt).getTeams().stream().filter(t -> t.getUuid().equals(teamId)).findFirst().get();
+  @PostMapping("/springdata/hunts/{huntId}/teams")
+  public Team createTeam(@PathVariable("huntId") Hunt hunt, @RequestBody Team team) {
+    if (hunt == null) throw new ResponseStatusException(NOT_FOUND, "Hunt not found");
+    if (team.getUuid() != null) throw new ResponseStatusException(BAD_REQUEST, "Team ID must not be supplied (did you mean to update?)");
+    return teamService.createTeam(team, hunt.getUuid());
   }
 
   // TODO: Validate that the provided Team comes with an ID and matches the path variable (any chance that Spring can

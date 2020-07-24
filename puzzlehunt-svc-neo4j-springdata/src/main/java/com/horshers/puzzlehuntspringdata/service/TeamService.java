@@ -1,27 +1,38 @@
 package com.horshers.puzzlehuntspringdata.service;
 
+import com.horshers.puzzlehuntspringdata.model.Hunt;
 import com.horshers.puzzlehuntspringdata.model.Person;
 import com.horshers.puzzlehuntspringdata.model.Team;
+import com.horshers.puzzlehuntspringdata.repo.HuntRepository;
 import com.horshers.puzzlehuntspringdata.repo.PersonRepository;
 import com.horshers.puzzlehuntspringdata.repo.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.collections4.IterableUtils.toList;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Component
 public class TeamService {
 
-  @Autowired
-  TeamRepository teamRepository;
+  @Autowired HuntRepository huntRepository;
+  @Autowired PersonRepository personRepository;
+  @Autowired TeamRepository teamRepository;
 
-  @Autowired
-  PersonRepository personRepository;
+  @Transactional
+  public Team createTeam(Team team, UUID huntId) {
+    Hunt hunt = huntRepository.findById(huntId).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
+    team = teamRepository.save(team);
+    hunt.addTeam(team);
+    hunt = huntRepository.save(hunt);
+    return hunt.findTeam(team).orElseThrow(() -> new RuntimeException("Should never happen!"));
+  }
 
   @Transactional
   public List<Person> addPlayers(UUID teamId, List<UUID> playerIds) {
