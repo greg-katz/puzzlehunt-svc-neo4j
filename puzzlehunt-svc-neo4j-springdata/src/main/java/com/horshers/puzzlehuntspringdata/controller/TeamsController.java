@@ -152,12 +152,7 @@ public class TeamsController {
   // curl -X PUT -H 'Content-Type: application/json' -i http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/solvedpuzzles/214941d3-98d8-4378-b9f1-c69490e59e26 --data '{"uuid":"214941d3-98d8-4378-b9f1-c69490e59e26","start":"2015-06-24T09:32:01.001+01:00","end":"2015-06-24T11:52:01.001+01:00","points":"551"}'
   @PutMapping("/springdata/teams/{teamId}/solvedpuzzles/{oldSolvedPuzzle}")
   public TeamSolvedPuzzle updateSolvedPuzzle(@PathVariable("teamId") UUID teamId, @PathVariable("oldSolvedPuzzle") TeamSolvedPuzzle oldSolvedPuzzle, @RequestBody TeamSolvedPuzzle newSolvedPuzzle) {
-    // TODO: Write HORSHERS comment! The gist: Fiddling with the old TSP's properties and then saving the old TSP does what you want;
-    // setting the new TSP's team and puzzle and then saving the new TSP leads to madness
-    oldSolvedPuzzle.setStart(newSolvedPuzzle.getStart());
-    oldSolvedPuzzle.setEnd(newSolvedPuzzle.getEnd());
-    oldSolvedPuzzle.setPoints(newSolvedPuzzle.getPoints());
-    return teamSolvedPuzzleRepository.save(oldSolvedPuzzle);
+    return teamService.updateSolvedPuzzle(oldSolvedPuzzle, newSolvedPuzzle);
   }
 
   // TODO: Either validate that the team and the solved puzzle belong together or get rid of nesting under /team

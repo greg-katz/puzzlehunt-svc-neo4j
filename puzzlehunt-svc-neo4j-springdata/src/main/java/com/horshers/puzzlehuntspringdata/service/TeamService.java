@@ -9,8 +9,12 @@ import com.horshers.puzzlehuntspringdata.repo.HuntRepository;
 import com.horshers.puzzlehuntspringdata.repo.PersonRepository;
 import com.horshers.puzzlehuntspringdata.repo.PuzzleRepository;
 import com.horshers.puzzlehuntspringdata.repo.TeamRepository;
+import com.horshers.puzzlehuntspringdata.repo.TeamSolvedPuzzleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.ZonedDateTime;
@@ -27,6 +31,7 @@ public class TeamService {
   @Autowired PersonRepository personRepository;
   @Autowired PuzzleRepository puzzleRepository;
   @Autowired TeamRepository teamRepository;
+  @Autowired TeamSolvedPuzzleRepository teamSolvedPuzzleRepository;
 
   public Team createTeam(Team team, UUID huntId) {
     Hunt hunt = huntRepository.findById(huntId).orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Hunt not found"));
@@ -83,5 +88,46 @@ public class TeamService {
     solvedPuzzle.setPuzzle(puzzle);
     team.addSolvedPuzzle(solvedPuzzle); // TODO: What if the team already has a TSP for this puzzle?
     return teamRepository.save(team).findSolvedPuzzle(puzzle).orElseThrow(() -> new RuntimeException("Should never happen!"));
+  }
+
+  /*
+     There's a question worth considering here on whether it's better to set properties on the oldSolvedPuzzle from
+     the newSolvedPuzzle or the other way around. On their way in, "oldSolvedPuzzle" is the TeamSolvedPuzzle instance
+     that we pulled from the database and "newSolvedPuzzle" contains the relationship attributes we want to update
+     coming from the request.
+
+     The advantage of setting properties on the oldSolvedPuzzle is that it's already wired into the object graph that
+     contains its relationships to Team and Puzzle (and circularly from Team back to itself). You just set the mutable
+     properties based on the newSolvedPuzzle, save the oldSolvedPuzzle, and you're done.
+
+     Setting properties on the newSolvedPuzzle is a bit more complex but arguably scales better and is more maintainable
+     since if you add a new relationship property this code won't need to change. You need to set the Team and Puzzle
+     fields in the newSolvedPuzzle before saving, which makes sense, but the real trick is that you also need to replace
+     the circular reference of TeamSolvedPuzzle->Team->TeamSolvedPuzzle to be the newSolvedPuzzle instance, or else
+     the oldSolvedPuzzle instance will still be in the object graph that's being saved and the save won't work as you
+     expect.
+*/
+  public TeamSolvedPuzzle updateSolvedPuzzle(TeamSolvedPuzzle oldSolvedPuzzle, TeamSolvedPuzzle newSolvedPuzzle) {
+
+
+   /*
+     What the code would look like if we saved the oldSolvedPuzzle instance instad of newSolvedPuzzle:
+
+    oldSolvedPuzzle.setStart(newSolvedPuzzle.getStart());
+    oldSolvedPuzzle.setEnd(newSolvedPuzzle.getEnd());
+    oldSolvedPuzzle.setPoints(newSolvedPuzzle.getPoints());
+
+    return teamSolvedPuzzleRepository.save(oldSolvedPuzzle);
+    */
+
+    Team team = oldSolvedPuzzle.getTeam();
+    team.getTeamSolvedPuzzles().remove(oldSolvedPuzzle);
+    team.getTeamSolvedPuzzles().add(newSolvedPuzzle);
+
+    newSolvedPuzzle.setTeam(team);
+    newSolvedPuzzle.setPuzzle(oldSolvedPuzzle.getPuzzle());
+    newSolvedPuzzle.setUuid(oldSolvedPuzzle.getUuid());
+
+    return teamSolvedPuzzleRepository.save(newSolvedPuzzle);
   }
 }
