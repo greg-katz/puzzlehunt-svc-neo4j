@@ -11,13 +11,11 @@ import com.horshers.puzzlehuntspringdata.repo.PuzzleRepository;
 import com.horshers.puzzlehuntspringdata.repo.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static org.apache.commons.collections4.IterableUtils.toList;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -30,7 +28,6 @@ public class TeamService {
   @Autowired PuzzleRepository puzzleRepository;
   @Autowired TeamRepository teamRepository;
 
-  @Transactional
   public Team createTeam(Team team, UUID huntId) {
     Hunt hunt = huntRepository.findById(huntId).orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Hunt not found"));
     team = teamRepository.save(team);
@@ -39,7 +36,6 @@ public class TeamService {
     return hunt.findTeam(team).orElseThrow(() -> new RuntimeException("Should never happen!"));
   }
 
-  @Transactional
   public Person setCaptain(Team team, UUID captainId) {
     Person captain = personRepository.findById(captainId).orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Captain not found"));
     team.setCaptain(captain); // TODO: So if the team already had a captain, does this result in two CAPTAIN_OF relationships in the database?
@@ -47,7 +43,6 @@ public class TeamService {
     return teamRepository.save(team).getCaptain();
   }
 
-  @Transactional
   public Team removeCaptain(Team team) {
     Person oldCaptain = team.getCaptain();
 
@@ -81,7 +76,6 @@ public class TeamService {
     return teamRepository.save(team).getPlayers();
   }
 
-  @Transactional
   public TeamSolvedPuzzle createSolvedPuzzle(Team team, Puzzle puzzle) {
     TeamSolvedPuzzle solvedPuzzle = new TeamSolvedPuzzle();
     solvedPuzzle.setStart(ZonedDateTime.now());
