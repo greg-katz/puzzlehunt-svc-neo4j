@@ -62,24 +62,20 @@ public class TeamService {
     return teamRepository.save(team);
   }
 
-  public List<Person> addPlayers(UUID teamId, List<UUID> playerIds) {
-    Team team = teamRepository.findById(teamId).get();
+  public List<Person> addPlayers(Team team, List<UUID> playerIds) {
     List<Person> players = toList(personRepository.findAllById(playerIds));
     team.getPlayers().addAll(players);
 
     return teamRepository.save(team).getPlayers();
   }
 
-  public List<Person> deletePlayer(UUID teamId, UUID playerId) {
-    Team team = teamRepository.findById(teamId).get();
-    team.setPlayers(team.getPlayers().stream().filter(player -> !player.getUuid().equals(playerId)).collect(Collectors.toList()));
+  public List<Person> deletePlayer(Team team, Person player) {
+    team.getPlayers().remove(player);
     return teamRepository.save(team).getPlayers();
   }
 
-  public List<Person> setPlayers(UUID teamId, List<UUID> playerIds) {
-    Team team = teamRepository.findById(teamId).get();
+  public List<Person> setPlayers(Team team, List<UUID> playerIds) {
     Iterable<Person> players = personRepository.findAllById(playerIds);
-
     team.setPlayers(toList(players));
 
     return teamRepository.save(team).getPlayers();

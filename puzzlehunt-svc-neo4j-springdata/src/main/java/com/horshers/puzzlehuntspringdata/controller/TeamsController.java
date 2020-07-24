@@ -102,8 +102,8 @@ public class TeamsController {
   // Add persons 3 and 4 to team 1:
   // curl -X POST -H 'Content-Type: application/json' -i http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/players --data '["9434d65c-a693-4dac-95fd-5496ebd32650", "5efd7a47-98f7-4c4d-87e9-ba7434c4afa6"]'
   @PostMapping("/springdata/teams/{teamId}/players")
-  public List<Person> addPlayers(@PathVariable("teamId") UUID teamId, @RequestBody List<UUID> playerIds) {
-    return teamService.addPlayers(teamId, playerIds);
+  public List<Person> addPlayers(@PathVariable("teamId") Team team, @RequestBody List<UUID> playerIds) {
+    return teamService.addPlayers(team, playerIds);
   }
 
   // TODO: Should we validate that the player exists?
@@ -112,16 +112,16 @@ public class TeamsController {
   // Delete person 4 from team 1:
   // curl -X DELETE -H 'Content-Type: application/json' -i http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/players/5efd7a47-98f7-4c4d-87e9-ba7434c4afa6
   @DeleteMapping("/springdata/teams/{teamId}/players/{playerId}")
-  public List<Person> deletePlayer(@PathVariable("teamId") UUID teamId, @PathVariable("playerId") UUID playerId) {
-    return teamService.deletePlayer(teamId, playerId);
+  public List<Person> deletePlayer(@PathVariable("teamId") Team team, @PathVariable("playerId") Person player) {
+    return teamService.deletePlayer(team, player);
   }
 
   // TODO: Is there a way to get Spring's argument resolution to populate a List<Person> instead of List<UUID>?
   // Set team 1's players to person 3 and person 4:
   // curl -X PUT -H 'Content-Type: application/json' -i http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/players --data '["9434d65c-a693-4dac-95fd-5496ebd32650", "5efd7a47-98f7-4c4d-87e9-ba7434c4afa6"]'
-  @PutMapping("/springdata/teams/{id}/players")
-  public List<Person> setPlayers(@PathVariable("id") UUID teamId, @RequestBody List<UUID> players) {
-    return teamService.setPlayers(teamId, players);
+  @PutMapping("/springdata/teams/{teamId}/players")
+  public List<Person> setPlayers(@PathVariable("teamId") Team team, @RequestBody List<UUID> players) {
+    return teamService.setPlayers(team, players);
   }
 
   // TODO: Validate that the team exists
