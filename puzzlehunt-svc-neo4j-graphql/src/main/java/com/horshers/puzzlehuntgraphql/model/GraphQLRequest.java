@@ -8,5 +8,5 @@ import java.util.Map;
 public class GraphQLRequest {
   String query;
   String operationName;
-  Map<String, String> variables;
+  Map<String, Object> variables;
 }

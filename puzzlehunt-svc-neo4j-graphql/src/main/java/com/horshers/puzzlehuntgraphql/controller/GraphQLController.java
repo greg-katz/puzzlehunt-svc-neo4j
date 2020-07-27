@@ -35,7 +35,7 @@ public class GraphQLController {
 
     try (Session session = driver.session()) {
 
-      Result result = session.run(cypherString);
+      Result result = session.run(cypherString, request.getVariables());
       Record record = result.single();
       return record.asMap();
     }
