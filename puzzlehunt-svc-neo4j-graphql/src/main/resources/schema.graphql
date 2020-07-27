@@ -1,0 +1,47 @@
+type Query {
+  hunts: [Hunt]
+}
+
+type Hunt {
+  id: ID!
+  name: String!
+  start: String!  # TODO: Can start and end be of a custom Date scalar type that we define?
+  end: String!
+  puzzles: [Puzzle!]! @relation(name: "HAS")
+  teams: [Team!]! @relation(name: "PLAYED", direction: IN)
+}
+
+type Puzzle {
+  id: ID!
+  name: String!
+  answer: String!
+  par: Int!
+  points: Int!
+  hints: [Hint!]! @relation(name: "HAS")
+  partialSolutions: [PartialSolution!]! @relation(name: "HAS")
+}
+
+type Hint {
+  id: ID!
+  text: String!
+  cost: Int!
+  unlockMins: Int!
+}
+
+type PartialSolution {
+  id: ID!
+  solution: String!
+  response: String!
+}
+
+type Team {
+  id: ID!
+  name: String!
+  captain: Person! @relation(name: "CAPTAIN_OF", direction: IN)
+  players: [Person!]! @relation(name: "MEMBER_OF", direction: IN)
+}
+
+type Person {
+  id: ID!
+  name: String!
+}

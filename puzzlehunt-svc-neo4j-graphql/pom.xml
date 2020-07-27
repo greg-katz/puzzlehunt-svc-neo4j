@@ -13,6 +13,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>29.0-jre</version>
+    </dependency>
+    <dependency>
       <groupId>com.graphql-java-kickstart</groupId>
       <artifactId>graphiql-spring-boot-starter</artifactId>
       <version>7.1.0</version>
