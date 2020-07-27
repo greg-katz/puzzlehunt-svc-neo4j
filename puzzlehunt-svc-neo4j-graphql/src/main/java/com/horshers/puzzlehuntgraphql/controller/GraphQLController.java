@@ -31,11 +31,20 @@ public class GraphQLController {
   public Map<String, Object> graphQLAPI(@RequestBody GraphQLRequest request) {
 
     Cypher cypher = translator.translate(request.getQuery()).get(0);
+
+    // The generated cypher queries will use variables instead of literals even for values that are literal in the
+    // graphQL query. When it does this the variables it generated are in the cypher object that comes back from the
+    // translator. We need to make sure when we run the cypher query we have all the variables that the translator
+    // defined AND all the ones that were specified in the graphQL request itself.
+    Map<String, Object> cypherVariables = cypher.getParams();
+    cypherVariables.putAll(request.getVariables());
+
     String cypherString = cypher.getQuery();
 
     try (Session session = driver.session()) {
 
-      Result result = session.run(cypherString, request.getVariables());
+      Result result = session.run(cypherString, cypherVariables);
+
       Record record = result.single();
       return record.asMap();
     }
