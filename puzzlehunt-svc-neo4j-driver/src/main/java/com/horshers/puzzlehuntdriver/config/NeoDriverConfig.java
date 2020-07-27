@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class NeoDriverConfig {
 
-  @Bean
+  @Bean("neo-driver")
   Driver driver() {
     return GraphDatabase.driver("bolt://localhost:7687", AuthTokens.basic("neo4j", "password"));
   }

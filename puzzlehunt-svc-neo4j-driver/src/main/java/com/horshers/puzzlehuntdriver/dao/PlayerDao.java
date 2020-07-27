@@ -8,6 +8,7 @@ import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
 import org.neo4j.driver.internal.value.NullValue;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -17,6 +18,7 @@ import java.util.UUID;
 public class PlayerDao {
 
   @Autowired
+  @Qualifier("neo-driver")
   Driver neoDriver;
 
   public Player createPlayer(UUID teamId, String name) {

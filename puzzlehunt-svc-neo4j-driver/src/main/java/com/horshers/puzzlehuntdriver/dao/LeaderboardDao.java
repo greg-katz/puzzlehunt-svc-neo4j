@@ -8,6 +8,7 @@ import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
 import org.neo4j.driver.types.IsoDuration;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -20,6 +21,7 @@ import static java.util.stream.Collectors.toList;
 public class LeaderboardDao {
 
   @Autowired
+  @Qualifier("neo-driver")
   private Driver neoDriver;
 
   String query =

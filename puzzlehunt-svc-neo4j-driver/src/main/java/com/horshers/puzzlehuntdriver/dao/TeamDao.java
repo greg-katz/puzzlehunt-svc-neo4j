@@ -8,6 +8,7 @@ import org.neo4j.driver.Session;
 import org.neo4j.driver.Value;
 import org.neo4j.driver.internal.value.NullValue;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.UUID;
 public class TeamDao {
 
   @Autowired
+  @Qualifier("neo-driver")
   private Driver neo;
 
   public List<Team> getTeams(UUID hunt) {

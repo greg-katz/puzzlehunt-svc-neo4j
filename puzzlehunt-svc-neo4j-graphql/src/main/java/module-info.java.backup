@@ -1,0 +1,7 @@
+module puzzlehunt.svc.neo4j.graphql {
+  requires spring.context;
+  requires java.annotation;
+  requires neo4j.graphql.java;
+  requires org.neo4j.driver;
+  requires lombok;
+}
