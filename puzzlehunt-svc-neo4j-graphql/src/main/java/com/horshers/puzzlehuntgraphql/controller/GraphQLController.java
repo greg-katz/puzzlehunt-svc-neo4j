@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -36,8 +37,10 @@ public class GraphQLController {
     // graphQL query. When it does this the variables it generated are in the cypher object that comes back from the
     // translator. We need to make sure when we run the cypher query we have all the variables that the translator
     // defined AND all the ones that were specified in the graphQL request itself.
-    Map<String, Object> cypherVariables = cypher.getParams();
-    cypherVariables.putAll(request.getVariables());
+    Map<String, Object> cypherVariables = new HashMap<>(cypher.getParams());
+    if (request.getVariables() != null) {
+      cypherVariables.putAll(request.getVariables());
+    }
 
     String cypherString = cypher.getQuery();
 
