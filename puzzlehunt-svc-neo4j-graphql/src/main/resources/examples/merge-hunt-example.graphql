@@ -1,0 +1,28 @@
+# I tried a variant of this mutation using updateHunt instead of mergeHunt and got nutty results. After the updateHunt
+# mutation, the updated node was missing its uuid property. This makes it seem like the generated updateFoo mutations
+# are broken, but probably I'm missing something. The generated mergeFoo mutators use the += operator with Cypher's set
+# command, while the generated updateFoo mutations use = (and don't specify the ID property). += has
+# "update property if non-null value specified, delete property if null value specified, otherwise leave untouched"
+# semantics, which seems perfect for an "update" operation.
+mutation UpdateHunt($uuid: ID!, $name: String!, $start: String!, $end: String!) {
+  mergeHunt(uuid: $uuid, name: $name, start: $start, end: $end) {
+    uuid
+    name
+    start
+    end
+    teams {
+      name
+    }
+    puzzles {
+      name
+    }
+  }
+}
+
+# Example variables to use in GraphiQL:
+{
+  "uuid": "2c2b2203-ced6-452d-b4dc-9ee601d304e1",
+  "name": "DASH 20",
+  "start": "2015-06-24T12:50:35.556000000+01:00",
+  "end": "2015-06-24T17:50:35.556000000+01:00"
+}

@@ -3,7 +3,7 @@ type Query {
 }
 
 type Hunt {
-  id: ID!
+  uuid: ID!
   name: String!
   start: String!  # TODO: Can start and end be of a custom Date scalar type that we define?
   end: String!
@@ -12,7 +12,7 @@ type Hunt {
 }
 
 type Puzzle {
-  id: ID!
+  uuid: ID!
   name: String!
   answer: String!
   par: Int!
@@ -22,26 +22,26 @@ type Puzzle {
 }
 
 type Hint {
-  id: ID!
+  uuid: ID!
   text: String!
   cost: Int!
   unlockMins: Int!
 }
 
 type PartialSolution {
-  id: ID!
+  uuid: ID!
   solution: String!
   response: String!
 }
 
 type Team {
-  id: ID!
+  uuid: ID!
   name: String!
   captain: Person! @relation(name: "CAPTAIN_OF", direction: IN)
   players: [Person!]! @relation(name: "MEMBER_OF", direction: IN)
 }
 
 type Person {
-  id: ID!
+  uuid: ID!
   name: String!
 }

@@ -1,0 +1,35 @@
+{
+  hunt(name:"DASH 11") {
+    uuid
+    name
+    start
+    end
+    puzzles {
+      uuid
+      name
+      answer
+      hints {
+        text
+        cost
+        unlockMins
+      }
+      partialSolutions {
+        uuid
+        solution
+        response
+      }
+    }
+    teams {
+      uuid
+      name
+      captain {
+        uuid
+        name
+      }
+      players {
+        uuid
+        name
+      }
+    }
+  }
+}
