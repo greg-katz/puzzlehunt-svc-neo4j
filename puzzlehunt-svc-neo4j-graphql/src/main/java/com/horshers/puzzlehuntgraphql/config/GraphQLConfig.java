@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import javax.annotation.PostConstruct;
 import java.net.URL;
 
-import static kotlin.text.Charsets.UTF_8;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Configuration
 public class GraphQLConfig {
