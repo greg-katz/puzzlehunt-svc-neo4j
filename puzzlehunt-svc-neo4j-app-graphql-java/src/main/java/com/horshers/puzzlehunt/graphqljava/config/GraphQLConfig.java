@@ -74,8 +74,7 @@ public class GraphQLConfig {
         """;
 
     return dataFetchingEnvironment -> {
-      Map<String, Object> args = new HashMap<>();
-      args.put("name", dataFetchingEnvironment.getArgument("name"));
+      Map<String, Object> args = Map.of("name", dataFetchingEnvironment.getArgument("name"));
 
       try (Session session = driver().session()) {
         Result result = session.run(query, args);
