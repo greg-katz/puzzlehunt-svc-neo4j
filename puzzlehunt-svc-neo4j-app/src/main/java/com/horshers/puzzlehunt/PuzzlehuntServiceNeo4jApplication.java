@@ -1,4 +1,4 @@
-package com.horshers.puzzlehunt.graphqljava;
+package com.horshers.puzzlehunt;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
