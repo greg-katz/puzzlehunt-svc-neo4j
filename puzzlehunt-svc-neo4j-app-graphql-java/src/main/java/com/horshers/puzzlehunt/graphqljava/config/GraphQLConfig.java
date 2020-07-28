@@ -17,7 +17,9 @@ import org.neo4j.driver.Session;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Configuration
@@ -31,6 +33,7 @@ public class GraphQLConfig {
   String schemaString = """
                   type Query {
                     hunts: [Hunt]
+                    huntByName(name: String!): Hunt
                   }
                   type Hunt {
                     uuid: ID!
@@ -53,10 +56,31 @@ public class GraphQLConfig {
         """;
 
     return dataFetchingEnvironment -> {
+      dataFetchingEnvironment.getArgument("name");
       try (Session session = driver().session()) {
         Result result = session.run(query);
         List<Record> records = result.list();
         return records.stream().map(Record::asMap).collect(Collectors.toList());
+      }
+    };
+  }
+
+  @Bean
+  DataFetcher huntByNameDataFetcher() {
+    String query =
+        """
+          MATCH (huntByName:Hunt{name: $name})
+          RETURN huntByName.uuid as uuid, huntByName.name as name
+        """;
+
+    return dataFetchingEnvironment -> {
+      Map<String, Object> args = new HashMap<>();
+      args.put("name", dataFetchingEnvironment.getArgument("name"));
+
+      try (Session session = driver().session()) {
+        Result result = session.run(query, args);
+        Record record = result.single();
+        return record.asMap();
       }
     };
   }
@@ -71,7 +95,8 @@ public class GraphQLConfig {
   private RuntimeWiring buildWiring() {
     return RuntimeWiring.newRuntimeWiring()
         .type(TypeRuntimeWiring.newTypeWiring("Query")
-            .dataFetcher("hunts", huntsDataFetcher()))
+            .dataFetcher("hunts", huntsDataFetcher())
+            .dataFetcher("huntByName", huntByNameDataFetcher()))
         .build();
   }
 }
