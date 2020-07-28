@@ -1,0 +1,22 @@
+mutation UpdateHuntName($uuid: ID!, $name: String!) {
+  mergeHunt(uuid: $uuid, name: $name) {
+    uuid
+    name
+    start
+    end
+    teams {
+      uuid
+      name
+    }
+    puzzles {
+      uuid
+      name
+    }
+  }
+}
+
+# Example variables to use in GraphiQL:
+{
+  "uuid": "2c2b2203-ced6-452d-b4dc-9ee601d304e1",
+  "name": "DASH 20"
+}
