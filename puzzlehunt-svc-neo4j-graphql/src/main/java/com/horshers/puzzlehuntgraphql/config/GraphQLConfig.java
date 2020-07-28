@@ -1,6 +1,8 @@
 package com.horshers.puzzlehuntgraphql.config;
 
 import com.google.common.io.Resources;
+import graphql.GraphQL;
+import graphql.schema.GraphQLSchema;
 import lombok.SneakyThrows;
 import org.neo4j.driver.AuthTokens;
 import org.neo4j.driver.Driver;
@@ -35,5 +37,13 @@ public class GraphQLConfig {
   @Bean("graphql-driver")
   Driver driver() {
     return GraphDatabase.driver("bolt://localhost:7687", AuthTokens.basic("neo4j", "password"));
+  }
+
+  //--------------------------------------
+
+  @Bean
+  GraphQL graphQL() {
+    GraphQLSchema graphQLSchema = SchemaBuilder.buildSchema(schema);
+    return GraphQL.newGraphQL(graphQLSchema).build();
   }
 }

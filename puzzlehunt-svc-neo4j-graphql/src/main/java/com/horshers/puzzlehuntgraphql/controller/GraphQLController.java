@@ -1,6 +1,7 @@
 package com.horshers.puzzlehuntgraphql.controller;
 
 import com.horshers.puzzlehuntgraphql.model.GraphQLRequest;
+import graphql.GraphQL;
 import lombok.SneakyThrows;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Record;
@@ -24,12 +25,21 @@ public class GraphQLController {
   Translator translator;
 
   @Autowired
+  GraphQL graphQL;
+
+  @Autowired
   @Qualifier("graphql-driver")
   Driver driver;
 
   @PostMapping("/graphql")
   @SneakyThrows
   public Map<String, Object> graphQLAPI(@RequestBody GraphQLRequest request) {
+
+    if (request.getQuery().contains("__schema")) {
+      Map schemaResponse = new HashMap();
+        schemaResponse.put("data", graphQL.execute(request.getQuery()).getData());
+      return schemaResponse;
+    }
 
     Cypher cypher = translator.translate(request.getQuery()).get(0);
 
