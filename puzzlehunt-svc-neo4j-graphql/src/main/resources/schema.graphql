@@ -11,7 +11,7 @@ type Hunt {
   leaderboard: [TeamResult] @cypher(statement: """
     match (hunt:Hunt)<-[played:PLAYED]-(team:Team)-[solved:SOLVED]->(puzzle:Puzzle)
     with hunt.name as huntName, team, solved
-    where huntName = $this.name
+    where huntName = this.name
     call {
       with huntName
       match (hunt:Hunt)-[:HAS]->(puzzle:Puzzle)
@@ -33,6 +33,16 @@ type TeamResult {
   finished: Boolean!
   score: Int!
   time: String!
+  lunchLocation: LunchLocation! @cypher(statement: """
+  RETURN {
+  teamName: this.name,
+  location: "Taco Del Mar"
+  }""")
+}
+
+type LunchLocation {
+  teamName: String!
+  location: String!
 }
 
 type Puzzle {
