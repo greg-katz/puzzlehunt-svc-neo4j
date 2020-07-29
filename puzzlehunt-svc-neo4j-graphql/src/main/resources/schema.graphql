@@ -28,6 +28,15 @@ type Hunt {
   """)
 }
 
+# There is something pretty magic going on here. The TeamResult is a "made up" object in that it is not an actual
+# database entity, but it is put together from queries to other entities that come togethre in the leaderboard query
+# above. The contrived "lunchLocation" field of the TeamResult shows that "made up" objects like this don't need to be
+# flat - they can include made-up subobjects of their own. When the leaderboard is fetched the lunchLocation query
+# is added automatically to the leaderboard query in order to fill out the TeamResult's lunchLocation field.
+
+# TODO: TeamResult and LunchLocation are types that don't represent entities - it would be neat if we could prevent the
+# neo4j-graphql SchemaBuilder from creating all of the normal derived queries and mutations for these because it doesn't
+# make any sense to have them.
 type TeamResult {
   name: String!
   finished: Boolean!
