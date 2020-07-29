@@ -1,0 +1,10 @@
+{
+  hunt(name: "DASH 11") {
+    leaderboard {
+      name
+      finished
+      score
+      time
+    }
+  }
+}
