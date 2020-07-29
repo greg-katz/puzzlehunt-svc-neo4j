@@ -1,17 +1,17 @@
 # This update name example doesn't bother to name or parameterize the mutation from the client's perspective. Contrast
 # with update-hunt-name-example.graphql, which does both of those things.
 mutation {
-  mergeHunt(uuid: "2c2b2203-ced6-452d-b4dc-9ee601d304e1", name: "DASH 30") {
-    uuid
+  mergeHunt(id: "2c2b2203-ced6-452d-b4dc-9ee601d304e1", name: "DASH 30") {
+    id
     name
     start
     end
     teams {
-      uuid
+      id
       name
     }
     puzzles {
-      uuid
+      id
       name
     }
   }

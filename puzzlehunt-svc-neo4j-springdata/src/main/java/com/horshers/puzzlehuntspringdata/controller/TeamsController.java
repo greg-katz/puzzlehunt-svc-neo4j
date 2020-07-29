@@ -98,8 +98,8 @@ public class TeamsController {
   @PostMapping("/springdata/hunts/{huntId}/teams")
   public Team createTeam(@PathVariable("huntId") Hunt hunt, @RequestBody Team team) {
     if (hunt == null) throw new ResponseStatusException(NOT_FOUND, "Hunt not found");
-    if (team.getUuid() != null) throw new ResponseStatusException(BAD_REQUEST, "Team ID must not be supplied (did you mean to update?)");
-    return teamService.createTeam(team, hunt.getUuid());
+    if (team.getId() != null) throw new ResponseStatusException(BAD_REQUEST, "Team ID must not be supplied (did you mean to update?)");
+    return teamService.createTeam(team, hunt.getId());
   }
 
   // TODO: Validate that the provided Team comes with an ID and matches the path variable (any chance that Spring can
@@ -189,7 +189,7 @@ public class TeamsController {
 
   // TODO: Also validate that the SolvedPuzzle ID is valid/existing in the current team.
   // Update the TeamSolvedPuzzle between Team 1 and the hearts puzzle with some new dates and points values:
-  // curl -X PUT -H 'Content-Type: application/json' -i http://localhost:8082/springdata/solvedpuzzles/214941d3-98d8-4378-b9f1-c69490e59e26 --data '{"uuid":"214941d3-98d8-4378-b9f1-c69490e59e26","start":"2015-06-24T09:32:01.001+01:00","end":"2015-06-24T11:52:01.001+01:00","points":"551"}'
+  // curl -X PUT -H 'Content-Type: application/json' -i http://localhost:8082/springdata/solvedpuzzles/214941d3-98d8-4378-b9f1-c69490e59e26 --data '{"id":"214941d3-98d8-4378-b9f1-c69490e59e26","start":"2015-06-24T09:32:01.001+01:00","end":"2015-06-24T11:52:01.001+01:00","points":"551"}'
   @PutMapping("/springdata/solvedpuzzles/{oldSolvedPuzzleId}")
   public TeamSolvedPuzzle updateSolvedPuzzle(@PathVariable("oldSolvedPuzzleId") TeamSolvedPuzzle oldSolvedPuzzle, @RequestBody TeamSolvedPuzzle newSolvedPuzzle) {
     return teamService.updateSolvedPuzzle(oldSolvedPuzzle, newSolvedPuzzle);

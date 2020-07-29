@@ -25,7 +25,7 @@ public class TeamDao {
   public List<Team> getTeams(UUID hunt) {
     String query = """
       match
-        (team:Team)-[:PLAYED]->(hunt:Hunt{uuid:$hunt})
+        (team:Team)-[:PLAYED]->(hunt:Hunt{id:$hunt})
       optional match
         (team)<-[:CAPTAIN_OF]-(captain:Person),
         (team)<-[:MEMBER_OF]-(player:Person)
@@ -41,7 +41,7 @@ public class TeamDao {
   public Team getTeam(UUID hunt, UUID team) {
     String query = """
       match
-        (team:Team{uuid:$team})-[:PLAYED]->(hunt:Hunt{uuid:$hunt})
+        (team:Team{id:$team})-[:PLAYED]->(hunt:Hunt{id:$hunt})
       optional match
         (team)<-[:CAPTAIN_OF]-(captain:Person),
         (team)<-[:MEMBER_OF]-(player:Person)
@@ -56,10 +56,10 @@ public class TeamDao {
 
   public Team createTeam(UUID hunt, String name) {
     String query = """
-      match (hunt:Hunt{uuid:$hunt})
+      match (hunt:Hunt{id:$hunt})
       create
         (team:Team {
-          uuid: $team,
+          id: $team,
           name: $name
         }),
         (team)-[:PLAYED]->(hunt)
@@ -78,7 +78,7 @@ public class TeamDao {
 
   private Team team(Record record) {
     Team team = new Team();
-    team.setId(uuid(record.get("team").get("uuid")));
+    team.setId(uuid(record.get("team").get("id")));
     team.setName(record.get("team").get("name").asString());
     team.setCaptain(player(record.get("captain")));
     team.setPlayers(players(record.get("players")));
@@ -91,7 +91,7 @@ public class TeamDao {
     }
 
     Player player = new Player();
-    player.setId(uuid(value.get("uuid")));
+    player.setId(uuid(value.get("id")));
     player.setName(value.get("name").asString());
     return player;
   }
