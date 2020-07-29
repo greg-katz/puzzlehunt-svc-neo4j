@@ -8,6 +8,31 @@ type Hunt {
   end: String!
   puzzles: [Puzzle!]! @relation(name: "HAS")
   teams: [Team!]! @relation(name: "PLAYED", direction: IN)
+  leaderboard: [TeamResult] @cypher(statement: """
+    match (hunt:Hunt)<-[played:PLAYED]-(team:Team)-[solved:SOLVED]->(puzzle:Puzzle)
+    with hunt.name as huntName, team, solved
+    where huntName = $this.name
+    call {
+      with huntName
+      match (hunt:Hunt)-[:HAS]->(puzzle:Puzzle)
+      where hunt.name = huntName
+      return count(puzzle) as totalPuzzles
+    }
+    return {
+      name: team.name,
+      finished: count(solved.end) = totalPuzzles,
+      score: sum(solved.points),
+      time: sum(duration.between(solved.start, solved.end))
+    } as teamResult
+    order by teamResult.score
+  """)
+}
+
+type TeamResult {
+  name: String!
+  finished: Boolean!
+  score: Int!
+  time: String!
 }
 
 type Puzzle {
