@@ -46,11 +46,11 @@ type Person {
 }
 
 type Mutation {
-  SwitchTeams(player: ID!, fromTeam: ID!, toTeam: ID!): Team @cypher(statement:"""
-    MATCH (player:Person{id:$player})-[r:MEMBER_OF]-(fromTeam:Team)
+  SwitchTeams(playerId: ID!, fromTeamId: ID!, toTeamId: ID!): Team @cypher(statement:"""
+    MATCH (player:Person{id:$playerId})-[r:MEMBER_OF]-(fromTeam:Team{id:$fromTeamId})
     DELETE r
     WITH player
-    MATCH (toTeam:Team{id:$toTeam})
+    MATCH (toTeam:Team{id:$toTeamId})
     CREATE (player)-[:MEMBER_OF]->(toTeam)
     RETURN toTeam as team
     """
