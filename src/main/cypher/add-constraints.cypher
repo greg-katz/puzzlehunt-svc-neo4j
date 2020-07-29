@@ -25,15 +25,4 @@ DROP CONSTRAINT puzzle_id_unique;
 DROP CONSTRAINT puzzle_name_unique;
 DROP CONSTRAINT team_id_unique;
 DROP CONSTRAINT team_name_unique;
-
-// TODO: Get rid of these drop statements once "uuid" has been renamed to "id" everywhere
-DROP CONSTRAINT hint_uuid_unique;
-DROP CONSTRAINT hunt_uuid_unique;
-DROP CONSTRAINT hunt_name_unique;
-DROP CONSTRAINT person_uuid_unique;
-DROP CONSTRAINT person_name_unique;
-DROP CONSTRAINT puzzle_uuid_unique;
-DROP CONSTRAINT puzzle_name_unique;
-DROP CONSTRAINT team_uuid_unique;
-DROP CONSTRAINT team_name_unique;
 */

@@ -144,7 +144,7 @@ public class TeamsController {
 
   // TODO: Should we validate that the players exist?
   // Add persons 3 and 4 to team 1:
-  // curl -X POST -H 'Content-Type: application/json' -i http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/players --data '["9434d65c-a693-4dac-95fd-5496ebd32650", "5efd7a47-98f7-4c4d-87e9-ba7434c4afa6"]'
+  // curl -s -X POST -H 'Content-Type: application/json' -i http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/players --data '["9434d65c-a693-4dac-95fd-5496ebd32650", "5efd7a47-98f7-4c4d-87e9-ba7434c4afa6"]'
   @PostMapping("/springdata/teams/{teamId}/players")
   public List<Person> addPlayers(@PathVariable("teamId") Team team, @RequestBody List<UUID> playerIds) {
     return teamService.addPlayers(team, playerIds);
@@ -153,7 +153,7 @@ public class TeamsController {
   // TODO: Should we validate that the player exists?
   // If it isn't reference-equal, does it become reference-equal by adding @Transaction to this method?
   // Delete person 4 from team 1:
-  // curl -X DELETE -H 'Content-Type: application/json' -i http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/players/5efd7a47-98f7-4c4d-87e9-ba7434c4afa6
+  // curl -s -X DELETE -H 'Content-Type: application/json' -i http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/players/5efd7a47-98f7-4c4d-87e9-ba7434c4afa6
   @DeleteMapping("/springdata/teams/{teamId}/players/{playerId}")
   public List<Person> deletePlayer(@PathVariable("teamId") Team team, @PathVariable("playerId") Person player) {
     return teamService.deletePlayer(team, player);
@@ -161,7 +161,7 @@ public class TeamsController {
 
   // TODO: Is there a way to get Spring's argument resolution to populate a List<Person> instead of List<UUID>?
   // Set team 1's players to person 3 and person 4:
-  // curl -X PUT -H 'Content-Type: application/json' -i http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/players --data '["9434d65c-a693-4dac-95fd-5496ebd32650", "5efd7a47-98f7-4c4d-87e9-ba7434c4afa6"]'
+  // curl -s -X PUT -H 'Content-Type: application/json' -i http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/players --data '["9434d65c-a693-4dac-95fd-5496ebd32650", "5efd7a47-98f7-4c4d-87e9-ba7434c4afa6"]'
   @PutMapping("/springdata/teams/{teamId}/players")
   public List<Person> setPlayers(@PathVariable("teamId") Team team, @RequestBody List<UUID> players) {
     return teamService.setPlayers(team, players);
@@ -169,7 +169,7 @@ public class TeamsController {
 
   // TODO: Validate that the team exists
   // Get solved puzzled of Team 1:
-  // curl -X GET -H 'Content-Type: application/json' -i http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/solvedpuzzles
+  // curl -s -X GET -H 'Content-Type: application/json' -i http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/solvedpuzzles
   @GetMapping("/springdata/teams/{id}/solvedpuzzles")
   public List<TeamSolvedPuzzle> findSolvedPuzzles(@PathVariable UUID id) {
     return teamRepository.findById(id).get().getTeamSolvedPuzzles();
@@ -179,7 +179,7 @@ public class TeamsController {
   // TODO: Something a bit weird here... The DomainClassConverter works with @PathVariable and @RequestParam but not @RequestBody, so the expected input is form-encoded because those
   // go into a bucket that Spring can pull with @RequestParam. If we were a bit more serious we may want to investigate whether it's possible to get the DomainClassConverter to work for request
   // bodies where the body is a single ID string.
-  // curl -X POST -H 'Content-Type: application/x-www-form-urlencoded' -i http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/solvedpuzzles --data puzzle=9e03b12a-dc65-485f-af28-9c5251a5c6f5
+  // curl -s -X POST -H 'Content-Type: application/x-www-form-urlencoded' -i http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/solvedpuzzles --data puzzle=9e03b12a-dc65-485f-af28-9c5251a5c6f5
   @PostMapping("/springdata/teams/{id}/solvedpuzzles")
   public TeamSolvedPuzzle createSolvedPuzzle(@PathVariable("id") Team team, @RequestParam Puzzle puzzle) {
     if (team == null) throw new ResponseStatusException(NOT_FOUND, "Team not found");
@@ -189,7 +189,7 @@ public class TeamsController {
 
   // TODO: Also validate that the SolvedPuzzle ID is valid/existing in the current team.
   // Update the TeamSolvedPuzzle between Team 1 and the hearts puzzle with some new dates and points values:
-  // curl -X PUT -H 'Content-Type: application/json' -i http://localhost:8082/springdata/solvedpuzzles/214941d3-98d8-4378-b9f1-c69490e59e26 --data '{"id":"214941d3-98d8-4378-b9f1-c69490e59e26","start":"2015-06-24T09:32:01.001+01:00","end":"2015-06-24T11:52:01.001+01:00","points":"551"}'
+  // curl -s -X PUT -H 'Content-Type: application/json' -i http://localhost:8082/springdata/solvedpuzzles/214941d3-98d8-4378-b9f1-c69490e59e26 --data '{"id":"214941d3-98d8-4378-b9f1-c69490e59e26","start":"2015-06-24T09:32:01.001+01:00","end":"2015-06-24T11:52:01.001+01:00","points":"551"}'
   @PutMapping("/springdata/solvedpuzzles/{oldSolvedPuzzleId}")
   public TeamSolvedPuzzle updateSolvedPuzzle(@PathVariable("oldSolvedPuzzleId") TeamSolvedPuzzle oldSolvedPuzzle, @RequestBody TeamSolvedPuzzle newSolvedPuzzle) {
     return teamService.updateSolvedPuzzle(oldSolvedPuzzle, newSolvedPuzzle);
@@ -197,7 +197,7 @@ public class TeamsController {
 
   @DeleteMapping("/springdata/solvedpuzzles/{solvedPuzzleId}")
   // Delete the TeamSolvedPuzzle between Team 1 and the hearts puzzle:
-  // curl -X DELETE -H 'Content-Type: application/json' -i http://localhost:8082/springdata/solvedpuzzles/214941d3-98d8-4378-b9f1-c69490e59e26
+  // curl -s -X DELETE -H 'Content-Type: application/json' -i http://localhost:8082/springdata/solvedpuzzles/214941d3-98d8-4378-b9f1-c69490e59e26
   public void deleteSolvedPuzzle(@PathVariable UUID solvedPuzzleId) {
     teamSolvedPuzzleRepository.deleteById(solvedPuzzleId);
   }
