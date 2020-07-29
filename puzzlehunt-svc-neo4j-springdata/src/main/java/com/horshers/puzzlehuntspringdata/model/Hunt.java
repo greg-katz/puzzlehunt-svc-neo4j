@@ -38,7 +38,7 @@ public class Hunt extends Entity {
     if (teams == null || team == null) return Optional.empty();
 
     return teams.stream()
-      .filter(t -> t.getUuid().equals(team.getUuid()))
+      .filter(t -> t.getId().equals(team.getId()))
       .findFirst();
   }
 }

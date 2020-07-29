@@ -25,10 +25,10 @@ public class PlayerDao {
     UUID playerId = UUID.randomUUID();
     String query =
       """
-        MATCH (team:Team{uuid:$teamId})
+        MATCH (team:Team{id:$teamId})
         CREATE
         (person:Person {
-          uuid: $playerId,
+          id: $playerId,
           name: $name
         }),
         (person)-[:MEMBER_OF]->(team)
@@ -44,10 +44,10 @@ public class PlayerDao {
   public Player readPlayer(UUID playerId) {
     String query =
       """
-        MATCH (person:Person{uuid:$uuid})-[:MEMBER_OF]-(team:Team)
+        MATCH (person:Person{id:$id})-[:MEMBER_OF]-(team:Team)
         RETURN person, team
       """;
-    Map<String, Object> params = Map.of("uuid", playerId.toString());
+    Map<String, Object> params = Map.of("id", playerId.toString());
     try (Session session = neoDriver.session()) {
       Result result = session.run(query, params);
       return makePlayerFromResult(result.single());
@@ -57,11 +57,11 @@ public class PlayerDao {
   public Player updatePlayer(UUID playerId, String name) {
     String query =
       """
-        MATCH (person:Person{uuid:$uuid})
+        MATCH (person:Person{id:$id})
         SET person.name = $name
         RETURN person
       """;
-    Map<String, Object> params = Map.of("uuid", playerId.toString(), "name", name);
+    Map<String, Object> params = Map.of("id", playerId.toString(), "name", name);
     try (Session session = neoDriver.session()) {
       Result result = session.run(query, params);
       return makePlayerFromResult(result.single());
@@ -71,11 +71,11 @@ public class PlayerDao {
   public boolean removePlayer(UUID playerId) {
     String query =
         """
-          MATCH (person:Person{uuid:$uuid})
+          MATCH (person:Person{id:$id})
           DETACH DELETE person
           RETURN count(person) as count
         """;
-    Map<String, Object> params = Map.of("uuid", playerId.toString());
+    Map<String, Object> params = Map.of("id", playerId.toString());
     try (Session session = neoDriver.session()) {
       Result result = session.run(query, params);
       return result.single().get("count").asInt() >= 1;
@@ -85,10 +85,10 @@ public class PlayerDao {
   public Player changeTeam(UUID playerId, UUID newTeamId) {
     String query =
         """
-          MATCH (person:Person{uuid:$playerId})-[r:MEMBER_OF]-(firstTeam:Team)
+          MATCH (person:Person{id:$playerId})-[r:MEMBER_OF]-(firstTeam:Team)
           DELETE r
           WITH person
-          MATCH (secondTeam:Team{uuid:$newTeamId})
+          MATCH (secondTeam:Team{id:$newTeamId})
           CREATE (person)-[:MEMBER_OF]->(secondTeam)
           RETURN person, secondTeam as team
         """;
@@ -101,7 +101,7 @@ public class PlayerDao {
 
   private Player makePlayerFromResult(Record record) {
     Player player = new Player();
-    player.setId(UUID.fromString(record.get("person").get("uuid").asString()));
+    player.setId(UUID.fromString(record.get("person").get("id").asString()));
     player.setName(record.get("person").get("name").asString());
     player.setTeam(makeShallowTeamFromRecord(record));
     return player;
@@ -112,7 +112,7 @@ public class PlayerDao {
       return null;
     }
     Team team = new Team();
-    team.setId(UUID.fromString(record.get("team").get("uuid").asString()));
+    team.setId(UUID.fromString(record.get("team").get("id").asString()));
     team.setName(record.get("team").get("name").asString());
     return team;
   }

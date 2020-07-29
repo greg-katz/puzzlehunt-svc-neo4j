@@ -1,11 +1,11 @@
 {
   hunt(name:"DASH 11") {
-    uuid
+    id
     name
     start
     end
     puzzles {
-      uuid
+      id
       name
       answer
       hints {
@@ -14,20 +14,20 @@
         unlockMins
       }
       partialSolutions {
-        uuid
+        id
         solution
         response
       }
     }
     teams {
-      uuid
+      id
       name
       captain {
-        uuid
+        id
         name
       }
       players {
-        uuid
+        id
         name
       }
     }

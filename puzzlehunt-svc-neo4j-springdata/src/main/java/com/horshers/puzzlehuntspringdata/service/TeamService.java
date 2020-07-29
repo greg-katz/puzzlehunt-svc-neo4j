@@ -50,7 +50,7 @@ public class TeamService {
 
     // When the captain resigns, if the team has any other players, promote one of them to be the captain
     Person newCaptain = team.getPlayers().stream()
-      .filter(p -> !p.getUuid().equals(oldCaptain.getUuid()))
+      .filter(p -> !p.getId().equals(oldCaptain.getId()))
       .findFirst()
       .orElse(null);
 
@@ -121,7 +121,7 @@ public class TeamService {
 
     newSolvedPuzzle.setTeam(team);
     newSolvedPuzzle.setPuzzle(oldSolvedPuzzle.getPuzzle());
-    newSolvedPuzzle.setUuid(oldSolvedPuzzle.getUuid());
+    newSolvedPuzzle.setId(oldSolvedPuzzle.getId());
 
     return teamSolvedPuzzleRepository.save(newSolvedPuzzle);
   }

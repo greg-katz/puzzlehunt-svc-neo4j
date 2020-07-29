@@ -17,7 +17,6 @@ import org.neo4j.driver.Session;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -36,7 +35,7 @@ public class GraphQLConfig {
                     huntByName(name: String!): Hunt
                   }
                   type Hunt {
-                    uuid: ID!
+                    id: ID!
                     name: String!
                   }
                   """;
@@ -52,7 +51,7 @@ public class GraphQLConfig {
     String query =
         """
           MATCH (hunt:Hunt)
-          RETURN hunt.uuid as uuid, hunt.name as name
+          RETURN hunt.id as id, hunt.name as name
         """;
 
     return dataFetchingEnvironment -> {
@@ -70,7 +69,7 @@ public class GraphQLConfig {
     String query =
         """
           MATCH (huntByName:Hunt{name: $name})
-          RETURN huntByName.uuid as uuid, huntByName.name as name
+          RETURN huntByName.id as id, huntByName.name as name
         """;
 
     return dataFetchingEnvironment -> {

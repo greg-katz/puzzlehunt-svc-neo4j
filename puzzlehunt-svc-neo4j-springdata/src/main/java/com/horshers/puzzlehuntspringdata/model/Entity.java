@@ -15,5 +15,5 @@ public abstract class Entity {
   @Id
   @GeneratedValue(strategy = UuidStrategy.class)
   @Convert(UuidStringConverter.class)
-  private UUID uuid;
+  private UUID id;
 }

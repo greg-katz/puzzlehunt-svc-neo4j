@@ -26,13 +26,13 @@ public class HuntsController {
     return toList(huntRepository.findAll());
   }
 
-//  @GetMapping("/springdata/hunts/{nameOrUuid}")
-//  public Hunt getHunt(@PathVariable String nameOrUuid) {
+//  @GetMapping("/springdata/hunts/{nameOrId}")
+//  public Hunt getHunt(@PathVariable String nameOrId) {
 //    try {
-//      return huntRepository.findById(UUID.fromString(nameOrUuid)).get();
+//      return huntRepository.findById(UUID.fromString(nameOrId)).get();
 //    }
 //    catch (IllegalArgumentException iae) {
-//      return huntRepository.findByName(nameOrUuid);
+//      return huntRepository.findByName(nameOrId);
 //    }
 //  }
 

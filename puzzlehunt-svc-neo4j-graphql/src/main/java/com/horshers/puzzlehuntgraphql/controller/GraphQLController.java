@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.stream.Collectors.toList;
+
 @RestController("neo-graphql-controller")
 public class GraphQLController {
 
@@ -34,13 +36,15 @@ public class GraphQLController {
   @PostMapping("/graphql")
   @SneakyThrows
   public Map<String, Object> graphQLAPI(@RequestBody GraphQLRequest request) {
-
-    if (request.getQuery().contains("__schema")) {
-      Map schemaResponse = new HashMap();
-        schemaResponse.put("data", graphQL.execute(request.getQuery()).getData());
-      return schemaResponse;
+    // To enable its autocomplete feature, GraphiQL requests the schema definition from the server. It turns out that
+    //  the GraphQL object can fulfill this request via its execute method.
+    if (request.getQuery().contains("__schema") || request.getQuery().contains("__type")) {
+      return Map.of("data", graphQL.execute(request.getQuery()).getData());
     }
 
+    // Amazing magic occurs here! The GraphQL query is translated into a single Cypher query, which means that instead
+    // of having to make a lot of database queries to fetch individual node properties, we can execute a single query
+    // in a single round trip. Bow down before the mighty Translator.
     Cypher cypher = translator.translate(request.getQuery()).get(0);
 
     // The generated cypher queries will use variables instead of literals even for values that are literal in the
@@ -55,11 +59,8 @@ public class GraphQLController {
     String cypherString = cypher.getQuery();
 
     try (Session session = driver.session()) {
-
       Result result = session.run(cypherString, cypherVariables);
-
-      Record record = result.single();
-      return record.asMap();
+      return Map.of("data", result.stream().map(Record::asMap).collect(toList()));
     }
   }
 }

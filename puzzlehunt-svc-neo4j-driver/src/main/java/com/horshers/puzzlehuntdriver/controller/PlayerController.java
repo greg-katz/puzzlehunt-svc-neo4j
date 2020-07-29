@@ -21,24 +21,24 @@ public class PlayerController {
     return playerDao.createPlayer(teamId, name);
   }
 
-  @RequestMapping("/driver/player/{uuid}")
-  public Player readPlayer(@PathVariable("uuid") UUID playerId) {
+  @RequestMapping("/driver/player/{id}")
+  public Player readPlayer(@PathVariable("id") UUID playerId) {
     return playerDao.readPlayer(playerId);
   }
 
-  @RequestMapping("/driver/player/{uuid}/update")
-  public Player updatePlayer(@PathVariable("uuid") UUID playerId,
+  @RequestMapping("/driver/player/{id}/update")
+  public Player updatePlayer(@PathVariable("id") UUID playerId,
                              @RequestParam String name) {
     return playerDao.updatePlayer(playerId, name);
   }
 
-  @RequestMapping("/driver/player/{uuid}/remove")
-  public boolean removePlayer(@PathVariable("uuid") UUID playerId) {
+  @RequestMapping("/driver/player/{id}/remove")
+  public boolean removePlayer(@PathVariable("id") UUID playerId) {
     return playerDao.removePlayer(playerId);
   }
 
-  @RequestMapping("/driver/player/{uuid}/changeteam")
-  public Player changeTeam(@PathVariable("uuid") UUID playerId,
+  @RequestMapping("/driver/player/{id}/changeteam")
+  public Player changeTeam(@PathVariable("id") UUID playerId,
                           @RequestParam UUID newTeamId) {
     return playerDao.changeTeam(playerId, newTeamId);
   }
