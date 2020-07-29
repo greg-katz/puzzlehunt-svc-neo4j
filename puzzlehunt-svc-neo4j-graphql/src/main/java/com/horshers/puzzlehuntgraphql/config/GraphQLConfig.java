@@ -5,12 +5,15 @@ import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;
 import lombok.SneakyThrows;
 import org.neo4j.driver.AuthTokens;
+import org.neo4j.driver.Config;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.GraphDatabase;
+import org.neo4j.driver.Logging;
 import org.neo4j.graphql.SchemaBuilder;
 import org.neo4j.graphql.Translator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import java.util.logging.Level;
 
 import javax.annotation.PostConstruct;
 import java.net.URL;
@@ -36,7 +39,8 @@ public class GraphQLConfig {
 
   @Bean("graphql-driver")
   Driver driver() {
-    return GraphDatabase.driver("bolt://localhost:7687", AuthTokens.basic("neo4j", "password"));
+    Config config = Config.builder().withLogging(Logging.slf4j()).build();
+    return GraphDatabase.driver("bolt://localhost:7687", AuthTokens.basic("neo4j", "password"), config);
   }
 
   //--------------------------------------
