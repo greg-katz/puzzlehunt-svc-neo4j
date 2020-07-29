@@ -1,0 +1,21 @@
+mutation SwitchTeams($playerId: ID!, $fromTeamId: ID!, $toTeamId: ID!) {
+  SwitchTeams(playerId: $playerId, fromTeamId: $fromTeamId, toTeamId: $toTeamId) {
+    id
+    name
+    captain {
+      id
+      name
+    }
+    players {
+      id
+      name
+    }
+  }
+}
+
+# Example variables to use in GraphiQL:
+{
+"playerId": "d80d2554-9e48-47b4-a52b-e8b4ba22cc16",
+"fromTeamId": "66af7be3-7240-48a9-9e19-f2ff0e885910",
+"toTeamId": "4090c00c-1219-4cf3-877e-146f345ec498"
+}
