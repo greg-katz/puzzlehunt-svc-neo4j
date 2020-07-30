@@ -19,7 +19,8 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Configuration
 public class GraphQLConfig {
@@ -30,15 +31,15 @@ public class GraphQLConfig {
   }
 
   String schemaString = """
-                  type Query {
-                    hunts: [Hunt]
-                    huntByName(name: String!): Hunt
-                  }
-                  type Hunt {
-                    id: ID!
-                    name: String!
-                  }
-                  """;
+    type Query {
+      hunts: [Hunt]
+      huntByName(name: String!): Hunt
+    }
+    type Hunt {
+      id: ID!
+      name: String!
+    }
+    """;
 
   @Bean
   GraphQL graphQL() {
@@ -48,29 +49,27 @@ public class GraphQLConfig {
 
   @Bean
   DataFetcher huntsDataFetcher() {
-    String query =
-        """
-          MATCH (hunt:Hunt)
-          RETURN hunt.id as id, hunt.name as name
-        """;
+    String query = """
+      MATCH (hunt:Hunt)
+      RETURN hunt.id as id, hunt.name as name
+      """;
 
     return dataFetchingEnvironment -> {
       dataFetchingEnvironment.getArgument("name");
       try (Session session = driver().session()) {
         Result result = session.run(query);
         List<Record> records = result.list();
-        return records.stream().map(Record::asMap).collect(Collectors.toList());
+        return records.stream().map(Record::asMap).collect(toList());
       }
     };
   }
 
   @Bean
   DataFetcher huntByNameDataFetcher() {
-    String query =
-        """
-          MATCH (huntByName:Hunt{name: $name})
-          RETURN huntByName.id as id, huntByName.name as name
-        """;
+    String query = """
+      MATCH (huntByName:Hunt{name: $name})
+      RETURN huntByName.id as id, huntByName.name as name
+      """;
 
     return dataFetchingEnvironment -> {
       Map<String, Object> args = Map.of("name", dataFetchingEnvironment.getArgument("name"));
@@ -92,9 +91,9 @@ public class GraphQLConfig {
 
   private RuntimeWiring buildWiring() {
     return RuntimeWiring.newRuntimeWiring()
-        .type(TypeRuntimeWiring.newTypeWiring("Query")
-            .dataFetcher("hunts", huntsDataFetcher())
-            .dataFetcher("huntByName", huntByNameDataFetcher()))
-        .build();
+      .type(TypeRuntimeWiring.newTypeWiring("Query")
+        .dataFetcher("hunts", huntsDataFetcher())
+        .dataFetcher("huntByName", huntByNameDataFetcher()))
+      .build();
   }
 }

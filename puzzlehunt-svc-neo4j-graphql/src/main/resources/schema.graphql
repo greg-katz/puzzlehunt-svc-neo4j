@@ -28,7 +28,7 @@ type Hunt {
       time: sum(duration.between(solved.start, solved.end))
     } as teamResult
     order by teamResult.score
-  """)
+    """)
 }
 
 # There is something pretty magic going on here. The TeamResult is a "made up" object in that it is not an actual
@@ -46,10 +46,11 @@ type TeamResult {
   score: Int!
   time: String!
   lunchLocation: LunchLocation! @cypher(statement: """
-  RETURN {
-  teamName: this.name,
-  location: "Taco Del Mar"
-  }""")
+    RETURN {
+    teamName: this.name,
+    location: "Taco Del Mar"
+    }
+    """)
 }
 
 type LunchLocation {
@@ -93,7 +94,7 @@ type Person {
 }
 
 type Mutation {
-  SwitchTeams(playerId: ID!, fromTeamId: ID!, toTeamId: ID!): Team @cypher(statement:"""
+  SwitchTeams(playerId: ID!, fromTeamId: ID!, toTeamId: ID!): Team @cypher(statement: """
     MATCH (player:Person{id:$playerId})-[r:MEMBER_OF]-(fromTeam:Team{id:$fromTeamId})
     DELETE r
     WITH player
