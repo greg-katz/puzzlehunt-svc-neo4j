@@ -113,7 +113,6 @@ public class GraphQLController {
    *
    * But the graphql response spec also defines an "errors" return value for when something goes wrong, and we are not
    * doing that yet.
-   *
    */
   Map<String, Object> extractResultData(Result result, Cypher query) {
     Map<String, Object> resultMap = new HashMap<>();
