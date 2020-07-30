@@ -1,5 +1,5 @@
-mutation SwitchTeams($playerId: ID!, $fromTeamId: ID!, $toTeamId: ID!) {
-  SwitchTeams(playerId: $playerId, fromTeamId: $fromTeamId, toTeamId: $toTeamId) {
+mutation movePlayer($playerId: ID!, $fromTeamId: ID!, $toTeamId: ID!) {
+  movePlayer(playerId: $playerId, fromTeamId: $fromTeamId, toTeamId: $toTeamId) {
     id
     name
     captain {

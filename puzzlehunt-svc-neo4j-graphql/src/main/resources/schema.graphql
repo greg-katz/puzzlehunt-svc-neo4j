@@ -94,7 +94,7 @@ type Person {
 }
 
 type Mutation {
-  switchTeams(playerId: ID!, fromTeamId: ID!, toTeamId: ID!): Team @cypher(statement: """
+  movePlayer(playerId: ID!, fromTeamId: ID!, toTeamId: ID!): Team @cypher(statement: """
     MATCH (player:Person{id:$playerId})-[r:MEMBER_OF]-(fromTeam:Team{id:$fromTeamId})
     DELETE r
     WITH player

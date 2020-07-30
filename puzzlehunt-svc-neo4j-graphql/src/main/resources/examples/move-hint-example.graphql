@@ -1,0 +1,64 @@
+# This is an example of a batch mutation. The two individual mutations addPuzzleHints and deletePuzzleHints are
+# executed within a single transaction. The results are shown below. The "add:" and "delete:" prefixes are optional.
+# If the prefixes are omitted from the mutation request, the mutation names are used in their place in the response.
+mutation moveHint {
+  add: addPuzzleHints(
+    id: "17a67d77-c093-4d0d-9e25-be2ba4f52419",
+    hints: ["a567360f-3a54-4d75-94a3-0b7177e8e691"]) {
+    id
+    name
+    hints {
+      id
+      text
+    }
+  }
+
+  delete: deletePuzzleHints(
+    id: "9e03b12a-dc65-485f-af28-9c5251a5c6f5",
+    hints: ["a567360f-3a54-4d75-94a3-0b7177e8e691"]) {
+    id
+    name
+    hints {
+      id
+      text
+    }
+  }
+}
+
+# Example results:
+{
+  "data": [
+    {
+      "add": {
+        "name": "Heart",
+        "id": "17a67d77-c093-4d0d-9e25-be2ba4f52419",
+        "hints": [
+          {
+            "id": "a567360f-3a54-4d75-94a3-0b7177e8e691",
+            "text": "lung hint 2 text"
+          },
+          {
+            "id": "ee51445c-0bd8-4d93-bd85-ccb28d852537",
+            "text": "heart hint 2 text"
+          },
+          {
+            "id": "b6cd5628-599e-44dc-9f22-bc2d014cceb8",
+            "text": "heart hint 1 text"
+          }
+        ]
+      }
+    },
+    {
+      "delete": {
+        "name": "Lungs",
+        "id": "9e03b12a-dc65-485f-af28-9c5251a5c6f5",
+        "hints": [
+          {
+            "id": "5758004b-c6de-4506-a461-747eb39abba2",
+            "text": "lung hint 1 text"
+          }
+        ]
+      }
+    }
+  ]
+}
