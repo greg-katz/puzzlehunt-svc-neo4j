@@ -7,7 +7,6 @@ import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLType;
 import lombok.SneakyThrows;
 import org.neo4j.driver.Driver;
-import org.neo4j.driver.Record;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
 import org.neo4j.graphql.Cypher;
@@ -24,9 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
 
 @RestController("neo-graphql-controller")
 public class GraphQLController {
@@ -44,8 +40,8 @@ public class GraphQLController {
   @PostMapping("/graphql")
   @SneakyThrows
   public Map<String, Object> graphQLAPI(@RequestBody GraphQLRequest request) {
-    // To enable its autocomplete feature, GraphiQL requests the schema definition from the server. It turns out that
-    //  the GraphQL object can fulfill this request via its execute method.
+    // To enable its autocomplete feature, GraphiQL requests schema details from the server. It turns out that the
+    // GraphQL object can fulfill this type of request via its execute method.
     if (request.getQuery().contains("__schema") || request.getQuery().contains("__type")) {
       return Map.of("data", graphQL.execute(request.getQuery()).getData());
     }
@@ -63,7 +59,6 @@ public class GraphQLController {
     Map<String, Object> dataMap = new HashMap<>();
     try (Session session = driver.session()) {
       for (Cypher query : queries) {
-
         Map<String, Object> queryVariables = mergeRequestAndCypherParams(request, query);
 
         String queryText = query.getQuery();
@@ -167,7 +162,7 @@ public class GraphQLController {
     return resultMap;
   }
 
-  ResultType getResultType(GraphQLType type) {
+  private ResultType getResultType(GraphQLType type) {
     // The type field in the Cypher object is nullable and defaults to null, which implies that there may be a case
     // where we'd expect to get a null type here. We aren't sure what that case actually is in practice though, so
     // although we defined this NONE value we don't really know how to deal with a NONE in the code above. Seems like
@@ -186,7 +181,7 @@ public class GraphQLController {
     }
   }
 
-  enum ResultType {
+  private enum ResultType {
     NONE,
     SINGLE,
     LIST
