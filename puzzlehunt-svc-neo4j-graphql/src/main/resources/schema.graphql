@@ -91,6 +91,20 @@ type Team {
 type Person {
   id: ID!
   name: String!
+  # While we're a bit creeped out by bidirectional relationships and we haven't been seeing a lot of them in
+  # GraphQL examples, this seems to work fine. We're not sure what problems, if any, will occur with bidirectionality
+  # in GraphQL. Infinite loops don't seem like much of a concern when the queries are explicitly specifying what
+  # properties they want at what depth, and it could actually be pretty cool to expose the relationships in each
+  # direction on the API and let the clients decide which side they want to query from. And theoretically if a client
+  # was doing something that could be made harder by bidirectionality, they can still query their data as unidirectional
+  # in whichever direction they want, so what would be the downside of doing bidirectionality in the GraphQL schema?
+  # Perhaps the reason we don't see it in examples is because in most GraphQL implementations it'd mean more work to
+  # create resolvers/datafetchers, but our implementation in this magic neo4j server comes for free!
+  #
+  # At this moment, until I see the downside, I feel like I might want to consider all relationships bidirectional in
+  # a server like this one where there's no extra implementation for creating them. But for now we've just done it for
+  # this teams relation as an example.
+  teams: [Team] @relation(name: "MEMBER_OF")
 }
 
 type Mutation {
