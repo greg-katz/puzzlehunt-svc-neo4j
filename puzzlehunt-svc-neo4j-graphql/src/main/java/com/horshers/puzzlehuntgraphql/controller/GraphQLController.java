@@ -151,7 +151,7 @@ public class GraphQLController {
         // to result.next().asMap() will produce a map with the same key name mapped to a different object. We need to
         // transform the result a bit by adding all of the result objects into a single list and then associating it
         // with the key name.
-        String key = currentMap.keySet().stream().findFirst().get();
+        String key = currentMap.keySet().stream().findFirst().orElseThrow();
         if (!listResultMap.containsKey(key)) {
           listResultMap.put(key, listResult);
         }
