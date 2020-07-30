@@ -8,6 +8,9 @@ type Hunt {
   end: String!
   puzzles: [Puzzle!]! @relation(name: "HAS")
   teams: [Team!]! @relation(name: "PLAYED", direction: IN)
+  # IMPORTANT: The neo4j-graphql library has a particular expectation that the return value of these cypher queries be
+  # a single column, which is why instead of returning multiple values this query takes pains to return just one value
+  # that is an object whose properties are the desired return values.
   leaderboard: [TeamResult] @cypher(statement: """
     match (hunt:Hunt)<-[played:PLAYED]-(team:Team)-[solved:SOLVED]->(puzzle:Puzzle)
     with hunt.name as huntName, team, solved
