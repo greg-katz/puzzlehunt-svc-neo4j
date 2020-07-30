@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -56,7 +57,7 @@ public class GraphQLController {
   }
 
   Map<String, Object> runCypherQueries(GraphQLRequest request, List<Cypher> queries) {
-    Map<String, Object> dataMap = new HashMap<>();
+    Map<String, Object> dataMap = new LinkedHashMap<>();
     try (Session session = driver.session()) {
       for (Cypher query : queries) {
         Map<String, Object> queryVariables = mergeRequestAndCypherParams(request, query);
