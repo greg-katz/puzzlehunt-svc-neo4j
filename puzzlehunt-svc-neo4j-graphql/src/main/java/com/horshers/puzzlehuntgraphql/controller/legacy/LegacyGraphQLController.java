@@ -1,4 +1,4 @@
-package com.horshers.puzzlehuntgraphql.controller;
+package com.horshers.puzzlehuntgraphql.controller.legacy;
 
 import com.horshers.puzzlehuntgraphql.model.GraphQLRequest;
 import graphql.GraphQL;
@@ -25,8 +25,13 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@RestController("neo-graphql-controller")
-public class GraphQLController {
+/**
+ * This class represents a working first draft implementation of a GraphQL HTTP API whose queries and mutations are
+ * translated into Cypher queries and executed against a Neo4j database. Although this approach works, it took a lot
+ * more code to implement than the subsequent implementation.
+ */
+@RestController("neo-graphql-controller-using-legacy-approach")
+public class LegacyGraphQLController {
 
   @Autowired
   Translator translator;
