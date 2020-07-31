@@ -13,14 +13,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static graphql.ExecutionInput.newExecutionInput;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
+
 @RestController("neo-graphql-controller-using-graphql-java")
 public class GraphQLControllerUsingGraphQLJava {
+
+  private static final Pattern pattern = Pattern.compile("(?s)^.*\\s+AS\\s+(.*)\\s*$");
 
   @Autowired
   GraphQL graphQL;
@@ -44,18 +49,14 @@ public class GraphQLControllerUsingGraphQLJava {
 
     List<Cypher> queries = translator.translate(request.getQuery());
 
-    Map<String, Cypher> context = new HashMap<>();
-    for (Cypher query : queries) {
-      Pattern pattern = Pattern.compile("(?s)^.*\\s+AS\\s+(.*)\\s*$");
-      Matcher matcher = pattern.matcher(query.getQuery());
-      if (matcher.matches()) {
-        context.put(matcher.group(1), query);
-      }
-    }
+    Map<String, Cypher> context = queries.stream().collect(toMap(this::extractQueryKey, identity()));
+    ExecutionInput.Builder input = newExecutionInput().query(request.getQuery()).context(context);
 
-    return Map.of("data", graphQL.execute(ExecutionInput.newExecutionInput()
-                                              .query(request.getQuery())
-                                              .context(context))
-                                              .getData());
+    return Map.of("data", graphQL.execute(input).getData());
+  }
+
+  private String extractQueryKey(Cypher query) {
+    Matcher matcher = pattern.matcher(query.getQuery());
+    return matcher.matches() ? matcher.group(1) : null;
   }
 }
