@@ -38,7 +38,7 @@ public class GraphQLController {
   @Qualifier("graphql-driver")
   Driver driver;
 
-  @PostMapping("/graphql")
+  @PostMapping("/graphql/v2")
   @SneakyThrows
   public Map<String, Object> graphQLAPI(@RequestBody GraphQLRequest request) {
     // To enable its autocomplete feature, GraphiQL requests schema details from the server. It turns out that the
@@ -112,8 +112,11 @@ public class GraphQLController {
    * examples we've come across of a neo4j-graphql-java server endpoint, since we handle multiple queries in the same
    * request).
    *
-   * But the graphql response spec also defines an "errors" return value for when something goes wrong, and we are not
-   * doing that yet.
+   * We did leave behind two weaknesses:
+   *
+   * 1. But the graphql response spec also defines an "errors" return value for when something goes wrong, and we are
+   * not doing that yet.
+   * 2. Right now if you run multiple queries with the same result key
    */
   Map<String, Object> extractResultData(Result result, Cypher query) {
     Map<String, Object> resultMap = new HashMap<>();
