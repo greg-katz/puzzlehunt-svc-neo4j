@@ -35,6 +35,13 @@ public class GraphQLControllerUsingGraphQLJava {
   @PostMapping("/graphql")
   @SneakyThrows
   public Map<String, Object> graphQLAPI(@RequestBody GraphQLRequest request) {
+
+    // To enable its autocomplete feature, GraphiQL requests schema details from the server. It turns out that the
+    // GraphQL object can fulfill this type of request via its execute method.
+    if (request.getQuery().contains("__schema") || request.getQuery().contains("__type")) {
+      return Map.of("data", graphQL.execute(request.getQuery()).getData());
+    }
+
     List<Cypher> queries = translator.translate(request.getQuery());
 
     Map<String, Cypher> context = new HashMap<>();
@@ -46,9 +53,6 @@ public class GraphQLControllerUsingGraphQLJava {
       }
     }
 
-
-/*    queries.get(0).get
-    Map<>*/
     return Map.of("data", graphQL.execute(ExecutionInput.newExecutionInput()
                                               .query(request.getQuery())
                                               .context(context))

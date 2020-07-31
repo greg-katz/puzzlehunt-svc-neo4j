@@ -1,8 +1,6 @@
 package com.horshers.puzzlehuntgraphql.config;
 
 import com.google.common.io.Resources;
-import com.horshers.puzzlehuntgraphql.controller.GraphQLController;
-import com.horshers.puzzlehuntgraphql.model.GraphQLRequest;
 import graphql.GraphQL;
 import graphql.schema.DataFetcher;
 import graphql.schema.FieldCoordinates;
@@ -11,23 +9,16 @@ import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.GraphQLType;
-import graphql.schema.idl.RuntimeWiring;
-import graphql.schema.idl.SchemaGenerator;
-import graphql.schema.idl.SchemaParser;
-import graphql.schema.idl.TypeDefinitionRegistry;
-import graphql.schema.idl.TypeRuntimeWiring;
 import lombok.SneakyThrows;
 import org.neo4j.driver.AuthTokens;
 import org.neo4j.driver.Config;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.GraphDatabase;
 import org.neo4j.driver.Logging;
-import org.neo4j.driver.Record;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
 import org.neo4j.graphql.Cypher;
 import org.neo4j.graphql.SchemaBuilder;
-import org.neo4j.graphql.SchemaConfig;
 import org.neo4j.graphql.Translator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,7 +27,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 import javax.annotation.PostConstruct;
 import java.net.URL;
@@ -44,7 +34,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.stream.Collectors.toList;
 
 @Configuration
 public class GraphQLConfig {
@@ -81,9 +70,20 @@ public class GraphQLConfig {
 
     GraphQLSchema neoGeneratedGraphQLSchema = SchemaBuilder.buildSchema(schema);
 
+    Map<String, DataFetcher> queryDataFetchers = new HashMap<>();
+    for (GraphQLType queryType : neoGeneratedGraphQLSchema.getQueryType().getChildren()) {
+      queryDataFetchers.put(queryType.getName(), cypherQueryDataFetcher());
+    }
+
+    Map<String, DataFetcher> mutationDataFetchers = new HashMap<>();
+    for (GraphQLType mutationType : neoGeneratedGraphQLSchema.getMutationType().getChildren()) {
+      mutationDataFetchers.put(mutationType.getName(), cypherQueryDataFetcher());
+    }
+
     GraphQLCodeRegistry customCodeRegistry =
         GraphQLCodeRegistry.newCodeRegistry(neoGeneratedGraphQLSchema.getCodeRegistry())
-            .dataFetcher(FieldCoordinates.coordinates("Query", "hunt"), huntDataFetcher())
+            .dataFetchers("Query", queryDataFetchers)
+            .dataFetchers("Mutation", mutationDataFetchers)
             .dataFetcher(FieldCoordinates.coordinates("Hunt", "name"), huntNameDataFetcher())
             .build();
 
@@ -91,7 +91,7 @@ public class GraphQLConfig {
   }
 
   @Bean
-  DataFetcher huntDataFetcher() {
+  DataFetcher cypherQueryDataFetcher() {
     return dataFetchingEnvironment -> {
       Map<String, Cypher> cypherMap = dataFetchingEnvironment.<Map<String, Cypher>>getContext();
       String cypherKey = dataFetchingEnvironment.getExecutionStepInfo().getPath().getSegmentName();
