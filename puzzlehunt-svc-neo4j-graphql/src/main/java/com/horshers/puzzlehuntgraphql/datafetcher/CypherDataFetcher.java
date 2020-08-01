@@ -22,9 +22,12 @@ import java.util.Map;
 /**
  * Data fetcher that resolves a property by generating a cypher query using the neo4j-graphql-java library.
  *
- * This is actually pretty cool but it takes some explaining. Let me tell you a story...
+ * The GraphQLController comment has some good info about why this is cool.
  *
- * Originally
+ * This data fetcher only makes sense to be hooked into top-level queries and mutations, because those are the only ones
+ * neo4j-graphql-java is able to make cypher queries from. We are expecting the cypher queries to be set on the context
+ * and passed in, with the query appropriate to the data fetcher under a key equal to the name/alias of the property
+ * we're resolving in the GraphQL query.
  */
 @Component
 public class CypherDataFetcher implements DataFetcher<Object> {
@@ -36,7 +39,11 @@ public class CypherDataFetcher implements DataFetcher<Object> {
   @Override
   public Object get(DataFetchingEnvironment dataFetchingEnvironment) throws Exception {
     Map<String, Cypher> cypherMap = dataFetchingEnvironment.<Map<String, Cypher>>getContext();
+    // The segment name is the name of the property we're currently returning in the overall query. This may be getting
+    // a default name based on type or it may be aliased, but it doesn't matter. Either way it is the key where we're
+    // expecting to find the appropriate cypher query in the context.
     String cypherKey = dataFetchingEnvironment.getExecutionStepInfo().getPath().getSegmentName();
+
     Cypher cypher = cypherMap.get(cypherKey);
     Map<String, Object> paramMap = mergeRequestAndCypherParams(dataFetchingEnvironment.getArguments(), cypher);
 
@@ -62,6 +69,8 @@ public class CypherDataFetcher implements DataFetcher<Object> {
   Object extractResultData(Result result, Cypher query) {
     ResultType resultType = getResultType(query.getType());
 
+    // Case 1: The result set is empty, so we need to return an empty object (list or map) depending on the result
+    // type of the query being executed.
     if (!result.hasNext()) {
       if (resultType == ResultType.LIST) {
         return new ArrayList<>();
@@ -70,24 +79,31 @@ public class CypherDataFetcher implements DataFetcher<Object> {
         return new HashMap<>();
       }
     }
+    // Case 2: The result set is not empty and the result type is a single object. Return that object.
     else if (resultType == ResultType.SINGLE) {
+      // Sorry this line got a bit crazy. At the moment I'm not seeing a simpler way... The cypher query returns the
+      // values mapped to the key of their property name (the same thing as the data fetcher's segment path). But as
+      // the graphql-java framework isn't expecting DataFetchers to return the object mapped by its property name, it's
+      // expect to get the object and map it to the property name itself, so we awkwardly have to reach into the query's
+      // result map - it is fair to assume a map with only one property because that is what the query will produce -
+      // and return just the value.
       return result.single().asMap().entrySet().stream().findFirst().orElseThrow().getValue();
     }
     else if (resultType == ResultType.LIST) {
-      List<Object> listResult = new ArrayList<>();
+      List<Object> resultList = new ArrayList<>();
       while (result.hasNext()) {
         Map<String, Object> currentMap = result.next().asMap();
-        // We *think* all non-empty responses will be a map with a single key. When there are multiple results each call
-        // to result.next().asMap() will produce a map with the same key name mapped to a different object. We need to
-        // transform the result a bit by adding all of the result objects into a single list and then associating it
-        // with the key name.
-        String key = currentMap.keySet().stream().findFirst().orElseThrow();
+        // All non-empty responses will be a map with a single key. When there are multiple results each call
+        // to result.next().asMap() will produce a map with the same key name mapped to a different object. We just need
+        // the values for each result in a list so we just pull the one value out of each result to add to our
+        // resultList.
 
-        listResult.add(currentMap.get(key));
+        resultList.add(currentMap.entrySet().stream().findFirst().orElseThrow().getValue());
       }
-      return listResult;
+      return resultList;
     }
     else {
+      // Not sure how/why this would ever happen. See the comment below in getResultType.
       return null;
     }
   }

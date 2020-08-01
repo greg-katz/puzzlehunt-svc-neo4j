@@ -71,6 +71,25 @@ public class GraphQLConfig {
     return GraphQL.newGraphQL(graphQLSchema).build();
   }
 
+  /**
+   * This requires a bit of explanation.
+   *
+   * First, realize that the SchemaBuilder.buildSchema call is using the neo4j-graphql-java library
+   * (https://github.com/neo4j-graphql/neo4j-graphql-java), which is mostly about auto-generating cypher queries based
+   * on a GraphQL schema. But one of the things it does when you use it to build a schema is create a whole mess of CRUD
+   * queries and mutators based on the domain types in your GraphQL schema - basically all of the operations it knows
+   * how to auto-generate cypher queries for.
+   *
+   * We want the queries and mutators that it generates, but we also need to customize it a bit - namely we need to
+   * set all of the DataFetchers for top-level queries and mutations to our fancy CypherDataFetcher which uses
+   * neo4j-graphql-java's GraphQL to Cypher translator to resolve the operations neo4j-graphql-java defines with the
+   * queries that neo4j-graphql-java is able to build.
+   *
+   * Hence this buildSchema method works by creating neo4j-graphql-java's augmented schema, looking at it for all
+   * the top-level queries and mutations, and then creating a new schema based on it but with the CypherDataFetchers
+   * plugged in for the top queries and mutations, and with any other custom DataFetchers needed for properties in
+   * the schema.
+   */
   private GraphQLSchema buildSchema() {
     GraphQLSchema neoGeneratedGraphQLSchema = SchemaBuilder.buildSchema(schema);
 
@@ -94,6 +113,13 @@ public class GraphQLConfig {
     return GraphQLSchema.newSchema(neoGeneratedGraphQLSchema).codeRegistry(customCodeRegistry).build();
   }
 
+  /**
+   * This is just a simple example of plugging in a custom data fetcher for a property that's already been resolved
+   * by a cypher query. Our "source" here is a Map that was part of the return value of our original cypher query,
+   * and the "name" field in it is what would have been returned by the default PropertyDataFetcher, but by creating
+   * our own DataFetcher and inserting it into our schema-building we can get custom logic to happen when resolving
+   * any property of our GraphQL schema.
+   */
   @Bean
   DataFetcher huntNameDataFetcher() {
     return dataFetchingEnvironment -> {

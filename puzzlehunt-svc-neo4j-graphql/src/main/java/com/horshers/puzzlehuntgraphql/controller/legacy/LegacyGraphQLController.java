@@ -1,6 +1,5 @@
 package com.horshers.puzzlehuntgraphql.controller.legacy;
 
-import com.horshers.puzzlehuntgraphql.controller.GraphQLControllerUsingGraphQLJava;
 import com.horshers.puzzlehuntgraphql.model.GraphQLRequest;
 import graphql.GraphQL;
 import graphql.schema.GraphQLList;

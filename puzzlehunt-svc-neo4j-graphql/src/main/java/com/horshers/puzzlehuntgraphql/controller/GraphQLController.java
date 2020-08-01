@@ -25,7 +25,7 @@ import static java.util.stream.Collectors.toMap;
 /**
  * Controller that implements a GraphQL API by using the graphql-java library as the main "driver" of resolution, but
  * where all of the top-level queries and mutations are set up to be resolved by the CypherDataFetcher, which uses
- * the neo4j-graphql-java library to generate the cypher queries used to implement these queries and mutation.
+ * the neo4j-graphql-java library to generate the cypher queries used to implement these queries and mutations.
  *
  * This is actually a pretty cool implementation. It means we're getting magic where a GraphQL query can be
  * transformed into a single Cypher query, and for simple data fetching cases and simple CRUD operations this means
