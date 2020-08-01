@@ -1,5 +1,6 @@
 package com.horshers.puzzlehuntgraphql.controller.legacy;
 
+import com.horshers.puzzlehuntgraphql.controller.GraphQLControllerUsingGraphQLJava;
 import com.horshers.puzzlehuntgraphql.model.GraphQLRequest;
 import graphql.GraphQL;
 import graphql.schema.GraphQLList;
@@ -28,7 +29,18 @@ import java.util.regex.Pattern;
 /**
  * This class represents a working first draft implementation of a GraphQL HTTP API whose queries and mutations are
  * translated into Cypher queries and executed against a Neo4j database. Although this approach works, it took a lot
- * more code to implement than the subsequent implementation.
+ * more code to implement than the subsequent implementation {@link GraphQLControllerUsingGraphQLJava}. That
+ * implementation is able to do away with the extraction and transformation of Cypher query results into a GraphQL
+ * response.
+ *
+ * Eliminating that code is nice, but what is more impressive about GraphQLControllerUsingGraphQLJava is that it
+ * supports GraphQL's "fetch every property individually if you want, from whatever back end you want" freedom *as an
+ * option* but supplies a default implementation that reaps the performance benefit of running a single Cypher query
+ * that resolves the entire requested GraphQL object graph straight from Neo4j. This class's approach, by contrast,
+ * doesn't have an answer to questions like these:
+ *
+ * - What if I want to transform or enrich Neo4j data to meet the needs of the GraphQL schema's users?
+ * - What if I want to fetch data from outside of Neo4j and stitch it together with Neo4j query results?
  */
 @RestController("neo-graphql-controller-using-legacy-approach")
 public class LegacyGraphQLController {
