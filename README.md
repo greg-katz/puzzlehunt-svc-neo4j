@@ -183,7 +183,7 @@ TODO: What each of the various neo-graphql-java-spring-nani libraries are useful
 
 # Musings on Java 14
 
-The best thing about Java 14 for this project was text blocks (a preview feature as of Java 14, actually). When Cypher queries were embedded in Java, we appreciated the readability of the triple double quote syntax for multi-line strings.
+The best thing about Java 14 for this project was text blocks (still a preview feature in Java 14). When Cypher queries were embedded in Java, we appreciated the readability of the triple double quote syntax for multi-line strings.
 
 # Getting started
 
@@ -222,6 +222,7 @@ TODO: Links to particularly useful docs/resources
 
 ## Other things to try
 
+- Can you use an in-memory Neo4j database to enable build time integration tests of the GraphQL API?
 - Add description comments to the GraphQL schema to document the types, properties, queries, and mutations (so that they show up in GraphiQL, for example). Descriptions support Markdown, [right](https://spec.graphql.org/June2018/#sec-Descriptions)?
 - Does Neo4j support full text search indexes? [Looks like yes](https://neo4j.com/developer/kb/fulltext-search-in-neo4j/)?
 - Does Neo4j support publishing a stream of change events? [Looks like yes](https://neo4j.com/docs/labs/neo4j-streams/current/overview/).
