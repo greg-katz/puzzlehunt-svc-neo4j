@@ -184,7 +184,7 @@ Although neo4j-graphql-java uses graphql-java internally it doesn't naturally pl
 
 Two reasons we weren't able to use this library:
 1. As of this experiment there is an irreconcilable version mismatch where graphql-java-spring and neo4j-graphql-java both depend on different versions of graphql-java and neither will work with the version specified by the other. This is why the experiment we did with graphql-java-spring had to be is a separate application module - because it can't be on the classpath at the same time as neo4j-graphql-java.
-2. The implementation we wound up with in the puzzlehunt-svc-neo4j-graphql module involved some custom work in the controller to generate Cypher queries that could be looked up by the CypherDataFetcher later. This meant we couldn't use the out-of-the-box controllers provided by graphql-java-spring even if they worked (well, maybe we could. If graphql-java-spring and neo4j-graphql-java didn't have their version incompatibility we could perhaps have done our extra work in a ControllerAdvice or Filter and still taken advantage of Spring's controller. Could be work looking into in the future).    
+2. The implementation we wound up with in the puzzlehunt-svc-neo4j-graphql module involved some custom work in the controller to generate Cypher queries that could be looked up by the CypherDataFetcher later. This meant we couldn't use the out-of-the-box controllers provided by graphql-java-spring even if they worked (well, maybe we could. If graphql-java-spring and neo4j-graphql-java didn't have their version incompatibility we could perhaps have done our extra work in a ControllerAdvice or Filter and still taken advantage of Spring's controller. Could be worth looking into in the future).    
 
 # Musings on Neo4j
 
