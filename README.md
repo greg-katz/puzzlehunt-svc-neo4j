@@ -280,6 +280,10 @@ TODO: How to get the service and database up and running
 # Helpful resources
 
 TODO: Links to particularly useful docs/resources
+- https://www.howtographql.com/ (GraphQL intro material)
+- graphql-java
+  - https://www.graphql-java.com/documentation/latest
+  - https://github.com/graphql-java/graphql-java
 
 ## Neo4j and service local URLs
 
@@ -330,6 +334,7 @@ TODO: Links to particularly useful docs/resources
 
 - Try a pure GRANDstack implementation (meaning Apollo Server as the back end rather than Java))
   - Is it easier to do end-to-end rapid prototyping using a pure GRANDstack or one using Java as the service layer?
+- Apollo client vs Relay
 - TODO: Subscriptions
 - TODO: Caching
 - TODO: Large data set vs query performance
