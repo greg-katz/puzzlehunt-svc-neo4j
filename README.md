@@ -234,7 +234,7 @@ Two reasons we weren't able to use this library:
 
 The best thing about Java 14 for this project was text blocks (still a preview feature in Java 14). When Cypher queries were embedded in Java, we appreciated the readability of the triple double quote syntax for multi-line strings.
 
-```
+```java
   @Query("""
     match (hunt:Hunt)<-[played:PLAYED]-(team:Team)-[solved:SOLVED]->(puzzle:Puzzle)
     with hunt.name as huntName, team, solved
