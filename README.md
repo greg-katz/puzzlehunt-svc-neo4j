@@ -1,20 +1,95 @@
 # puzzlehunt-svc-neo4j
 
-TODO: Describe what this repo was/is about
+**Tl;dr:** Two Java devs set out to learn about Neo4j and GraphQL. This repo is the result. 
 
+In the summer of 2020, we set out to get a bit of practical experience with Neo4j and GraphQL by writing an API for a fictional app that supports players competing in a [puzzlehunt](https://en.wikipedia.org/wiki/Puzzlehunt) (*à la* [DASH](http://playdash.org/), which uses the [ClueKeeper](https://www.cluekeeper.com/) app). 
 
-Outline:
-- Project goals:
-  - Get to "level 1" of experience with Neo4j, GraphQL, and Java's support for those two things
-  - Get to "level 1" answers to the questions "what are graph databases good for, and when would you reach for one?"
-  - Get to "level 1" answers to the questions "what is GraphQL good for, and when would use reach for it?"
+The API's job is to provide CRUD operations for entities in the (simplified) puzzlehunt, the entities being:
+
+- Hunts
+- Leaderboards (ranked teams and their times)
+- Teams
+- Players
+- Puzzles
+- Hints
+- Partial solutions (which let a team know whether they are on the right track to solving a puzzle)
+
+We imagined the following data model for these entities:
+
+```
+Hunt
+----
+name: string
+start: date
+end: date
+puzzles: Puzzle[] (ordered)
+teams: Team[]
+
+Leaderboard
+-----------
+teamResults: TeamResult[]
+
+TeamResult
+----------
+name: string (team name)
+finished: boolean
+score: int
+time: duration
+
+Team
+----
+name: string
+captain: Person
+players: Person[]
+progress: HuntProgress (this ends up being stored on team->puzzle relationships)
+
+Person
+------
+name: String
+
+Puzzle
+------
+name: string
+hints: Hint[] (ordered)
+answer: string
+partialSolution: PartialSolution[]
+par: int
+points: int
+
+Hint
+----
+text: text (or string? Does Neo make a distinction?)
+unlockMins: int
+cost: int
+
+PartialSolution
+---------------
+guess: string
+response: string
+```
+
+We also imagined some operations to perform on these entities, including:
+
+- Get the leaderboard for a hunt
+- Get all teams including their captains and players
+- Update a team's roster, including moving a player from one team to another
+
+# Goals and non-goals
+
+What we were trying to accomplish:
+
+  - Gain "level 1"  experience with Neo4j, GraphQL, and Java's support for those two things.
+  - Develop "level 1" answers to the questions "what are graph databases good for, and under what circumstances should you consider using one?"
+  - Develop "level 1" answers to the questions "what is GraphQL good for, and under what circumstances should you consider using it?"
+  - Side goal: Learn about the Java module system and its value to a multi-module project like this one.
 - Non-goals:
-  - Production readiness
+  - Production readiness. This was very much a lab experiment, with no pretense of shippability.
 - Baises:
-  - We're Java devs, so we tried to make things work in Java
-- Faux problem we solved: Write a service for a ClueKeeper-esque puzzlehunt app that stores its data in Neo4j
+  - We're Java devs, so we tried to make things work in Java.
+  - We focused on solving an OLTP/realtime problem rather than an analytical/batch one.
 
 # A word about project structure
+
 The puzzlehunt-svc-neo4j-app module contains the main runnable application which includes all the sub-modules where we tried experiments with different implementation approaches.
 
 The puzzlehunt-svc-neo4j-app-graphql-java module is a second runnable application that you probably shouldn't be too interested in - the more substantial GraphQL experiments are still part of the puzzlehunt-svc-neo4j-app module. More details below.
