@@ -280,7 +280,8 @@ TODO: How to get the service and database up and running
 # Helpful resources
 
 TODO: Links to particularly useful docs/resources
-- https://www.howtographql.com/ (GraphQL intro material)
+- https://graphql.org/learn/ (GraphQL docs)
+- https://www.howtographql.com/ (GraphQL intro material, including videos, plus tutorials in a number of languages, Java included)
 - graphql-java
   - https://www.graphql-java.com/documentation/latest
   - https://github.com/graphql-java/graphql-java
@@ -299,7 +300,9 @@ TODO: Links to particularly useful docs/resources
 - GraphQL/GraphiQL URLs
   - http://localhost:8082/graphiql (GraphiQL UI)
   - [All the hunts with all of their sub-data in a single GraphQL query, shown in GraphiQL](http://localhost:8082/graphiql?query=query%20%7B%0A%20%20hunt%20%7B%0A%20%20%20%20name%0A%20%20%20%20start%0A%20%20%20%20end%0A%20%20%20%20leaderboard%20%7B%0A%20%20%20%20%20%20name%0A%20%20%20%20%20%20finished%0A%20%20%20%20%20%20score%0A%20%20%20%20%20%20time%0A%20%20%20%20%7D%0A%20%20%20%20teams%20%7B%0A%20%20%20%20%20%20name%0A%20%20%20%20%20%20captain%20%7B%0A%20%20%20%20%20%20%20%20id%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20players%20%7B%0A%20%20%20%20%20%20%20%20name%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%20%20puzzles%20%7B%0A%20%20%20%20%20%20name%0A%20%20%20%20%20%20answer%0A%20%20%20%20%20%20par%0A%20%20%20%20%20%20points%0A%20%20%20%20%20%20hints%20%7B%0A%20%20%20%20%20%20%20%20text%0A%20%20%20%20%20%20%20%20cost%0A%20%20%20%20%20%20%20%20unlockMins%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20partialSolutions%20%7B%0A%20%20%20%20%20%20%20%20solution%0A%20%20%20%20%20%20%20%20response%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D)
+  - [A batch of queries, distinguished using aliases](http://localhost:8082/graphiql?query=query%20ICanHasMultipleQueries%20%7B%0A%20%20h1%3A%20hunt(name%3A%20%22DASH%2011%22)%20%7B%0A%20%20%20%20id%0A%20%20%20%20name%0A%20%20%20%20start%0A%20%20%20%20end%0A%20%20%20%20puzzles%20%7B%0A%20%20%20%20%20%20id%0A%20%20%20%20%7D%0A%20%20%7D%0A%20%20h2%3A%20hunt(name%3A%20%22DASH%2011%22)%20%7B%0A%20%20%20%20id%0A%20%20%20%20name%0A%20%20%20%20teams%20%7B%0A%20%20%20%20%20%20id%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D&operationName=ICanHasMultipleQueries)
   - [switchTeamsMultiMutation example, shown in GraphiQL](http://localhost:8082/graphiql?query=mutation%20switchTeamsMultiMutation%20%7B%0A%20%20add%3A%20addTeamPlayers(%0A%20%20%20%20id%3A%20%224090c00c-1219-4cf3-877e-146f345ec498%22%2C%0A%20%20%20%20players%3A%20%5B%22d80d2554-9e48-47b4-a52b-e8b4ba22cc16%22%5D)%20%7B%0A%20%20%20%20id%0A%20%20%7D%0A%20%20%0A%20%20delete%3A%20deleteTeamPlayers(%0A%20%20%20%20id%3A%20%2266af7be3-7240-48a9-9e19-f2ff0e885910%22%2C%0A%20%20%20%20players%3A%20%5B%22d80d2554-9e48-47b4-a52b-e8b4ba22cc16%22%5D)%20%7B%0A%20%20%20%20id%0A%20%20%7D%0A%7D&operationName=switchTeamsMultiMutation) (a batch mutation)
+  - [moveHint example, shown in GraphiQL](http://localhost:8082/graphiql?query=mutation%20moveHint%20%7B%0A%20%20add%3A%20addPuzzleHints(%0A%20%20%20%20id%3A%20%2217a67d77-c093-4d0d-9e25-be2ba4f52419%22%2C%0A%20%20%20%20hints%3A%20%5B%22a567360f-3a54-4d75-94a3-0b7177e8e691%22%5D)%20%7B%0A%20%20%20%20id%0A%20%20%20%20name%0A%20%20%20%20hints%20%7B%0A%20%20%20%20%20%20id%0A%20%20%20%20%20%20text%0A%20%20%20%20%7D%0A%20%20%7D%0A%0A%20%20delete%3A%20deletePuzzleHints(%0A%20%20%20%20id%3A%20%229e03b12a-dc65-485f-af28-9c5251a5c6f5%22%2C%0A%20%20%20%20hints%3A%20%5B%22a567360f-3a54-4d75-94a3-0b7177e8e691%22%5D)%20%7B%0A%20%20%20%20id%0A%20%20%20%20name%0A%20%20%20%20hints%20%7B%0A%20%20%20%20%20%20id%0A%20%20%20%20%20%20text%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D&operationName=moveHint) (another batch mutation)
 
 # Things to do next
 
