@@ -125,9 +125,9 @@ This experiment also includes support for the GraphiQL client, which can be acce
 
 TODO:
 - REST API design is still a pain
-- In practice, circular references are a PITA in practice for Spring OGM/Spring Data Neo4j
-- If you *don't* want to use GraphQL, Spring Data Neo4j is a good choice (CRUD for cheap)
-- Neo4j OGM doesn't seem to have a use case (just use Spring Data Neo4j)
+- In practice, reference cycles are a PITA for Spring OGM/Spring Data Neo4j
+- If you *don't* want to use GraphQL, Spring Data Neo4j is a good choice (you get CRUD for cheap)
+- Neo4j OGM doesn't seem to have a use case on its own (just use Spring Data Neo4j - it uses OGM under the hood)
 - GraphQL is cool! (cycles are solved; API design is fun)
 - GraphQL + Neo4j and automagic Cypher query generation
 - Neo4j's Java driver is a perfectly fine choice for certain use cases (if your whole world is made up of leaderboard-style queries, for example)
