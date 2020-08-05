@@ -8,6 +8,7 @@ import org.neo4j.ogm.annotation.NodeEntity;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class PartialSolution extends Entity {
+  // TODO: A better name for the solution field is "guess"
   private String solution;
   private String response;
 }
