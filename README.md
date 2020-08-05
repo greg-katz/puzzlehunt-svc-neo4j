@@ -82,9 +82,13 @@ What we were trying to accomplish:
   - Develop "level 1" answers to the questions "what are graph databases good for, and under what circumstances should you consider using one?"
   - Develop "level 1" answers to the questions "what is GraphQL good for, and under what circumstances should you consider using it?"
   - Side goal: Learn about the Java module system and its value to a multi-module project like this one.
-- Non-goals:
+
+Non-goals:
+
   - Production readiness. This was very much a lab experiment, with no pretense of shippability.
-- Baises:
+
+Baises:
+
   - We're Java devs, so we tried to make things work in Java.
   - We focused on solving an OLTP/realtime problem rather than an analytical/batch one.
 
