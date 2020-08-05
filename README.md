@@ -269,17 +269,21 @@ TODO: How to get the service and database up and running
 
 TODO: Links to particularly useful docs/resources
 
-## Neo4j and service URLs
+## Neo4j and service local URLs
 
 - http://localhost:7474/browser/ (Neo4j)
 - TODO: Driver implementation URLs (curl commands?)
-- http://localhost:8082/springdata/hunts (all hunts)
-- http://localhost:8082/springdata/hunts/2c2b2203-ced6-452d-b4dc-9ee601d304e1 (DASH 11)
-- http://localhost:8082/springdata/hunts/2c2b2203-ced6-452d-b4dc-9ee601d304e1/teams (DASH 11's teams)
-- http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910 (DASH 11's Team 1)
-- http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/captain (Team 1's captain
-- http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/players (Team 1's players)
-- TODO: GraphQL implementation example queries and mutations as GraphiQL URLs
+- Spring Data URLs
+  - http://localhost:8082/springdata/hunts (all hunts)
+  - http://localhost:8082/springdata/hunts/2c2b2203-ced6-452d-b4dc-9ee601d304e1 (DASH 11)
+  - http://localhost:8082/springdata/hunts/2c2b2203-ced6-452d-b4dc-9ee601d304e1/teams (DASH 11's teams)
+  - http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910 (DASH 11's Team 1)
+  - http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/captain (Team 1's captain)
+  - http://localhost:8082/springdata/teams/66af7be3-7240-48a9-9e19-f2ff0e885910/players (Team 1's players)
+- GraphQL/GraphiQL URLs
+  - http://localhost:8082/graphiql (GraphiQL UI)
+  - [All the hunts with all of their sub-data in a single GraphQL query, shown in GraphiQL](http://localhost:8082/graphiql?query=query%20%7B%0A%20%20hunt%20%7B%0A%20%20%20%20name%0A%20%20%20%20start%0A%20%20%20%20end%0A%20%20%20%20leaderboard%20%7B%0A%20%20%20%20%20%20name%0A%20%20%20%20%20%20finished%0A%20%20%20%20%20%20score%0A%20%20%20%20%20%20time%0A%20%20%20%20%7D%0A%20%20%20%20teams%20%7B%0A%20%20%20%20%20%20name%0A%20%20%20%20%20%20captain%20%7B%0A%20%20%20%20%20%20%20%20id%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20players%20%7B%0A%20%20%20%20%20%20%20%20name%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%20%20puzzles%20%7B%0A%20%20%20%20%20%20name%0A%20%20%20%20%20%20answer%0A%20%20%20%20%20%20par%0A%20%20%20%20%20%20points%0A%20%20%20%20%20%20hints%20%7B%0A%20%20%20%20%20%20%20%20text%0A%20%20%20%20%20%20%20%20cost%0A%20%20%20%20%20%20%20%20unlockMins%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20partialSolutions%20%7B%0A%20%20%20%20%20%20%20%20solution%0A%20%20%20%20%20%20%20%20response%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D)
+  - [switchTeamsMultiMutation example, shown in GraphiQL](http://localhost:8082/graphiql?query=mutation%20switchTeamsMultiMutation%20%7B%0A%20%20add%3A%20addTeamPlayers(%0A%20%20%20%20id%3A%20%224090c00c-1219-4cf3-877e-146f345ec498%22%2C%0A%20%20%20%20players%3A%20%5B%22d80d2554-9e48-47b4-a52b-e8b4ba22cc16%22%5D)%20%7B%0A%20%20%20%20id%0A%20%20%7D%0A%20%20%0A%20%20delete%3A%20deleteTeamPlayers(%0A%20%20%20%20id%3A%20%2266af7be3-7240-48a9-9e19-f2ff0e885910%22%2C%0A%20%20%20%20players%3A%20%5B%22d80d2554-9e48-47b4-a52b-e8b4ba22cc16%22%5D)%20%7B%0A%20%20%20%20id%0A%20%20%7D%0A%7D&operationName=switchTeamsMultiMutation) (a batch mutation)
 
 # Things to do next
 
