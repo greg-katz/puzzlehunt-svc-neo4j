@@ -127,7 +127,22 @@ TODO: GraphQL + Neo4j + autogeneration of a single Cipher query for each request
 
 # Learnings about libraries
 
-TODO: What each of the various neo-graphql-java-spring-nani libraries are useful for
+There are some different but similarly named libraries that are important to this project.
+
+[graphql-java](https://github.com/graphql-java/graphql-java) is the primary Java implementation of GraphQL. It provides classes for defining a GraphQL schema by schema definition, then plugging in classes like DataFetchers to implement the operations, then executing a GraphQL query by calling the appropriate DataFetchers.
+
+[neo4j-graphql-java](https://github.com/neo4j-graphql/neo4j-graphql-java) is a Java library for automatically transforming GraphQL queries into Cypher queries. Its primary class is the Translator, which gets built from a GraphQL schema (it uses graphql-java internally, so the schema object it creates is the same type as that library) and once set up allows you to translate any GraphQL query into Cypher.
+
+Another important feature of this library is that when you invoke its SchemaBuilder, it automatically adds query and mutation types to the schema for CRUD operations of all of your data types. These CRUD operations are thus what the Translator knows how to turn directly into Cypher just by analyzing your GraphQL schema.
+
+Although neo4j-graphql-java uses graphql-java internally it doesn't naturally plug into graphql-java so you can run DataFetchers that use Cypher translation. But this integration is exactly what we built in our puzzlehunt-svc-neo4j-graphql module.
+
+[graphql-java-spring](https://github.com/graphql-java/graphql-java-spring) This is a Spring library providing controllers for implementing a GraphQL API on top of the graphql-java framework. We tried this as an experiment in our secondary puzzlehunt-svc-neo4j-app-graphql-java application but didn't use it in our primary GraphQL implementation in the puzzlehunt-svc-neo4j-graphql module.
+
+Two reasons we weren't able to use this library:
+1. As of this experiment there is an irreconcilable version mismatch where graphql-java-spring and neo4j-graphql-java both depend on different versions of graphql-java and neither will work with the version specified by the other. This is why the experiment we did with graphql-java-spring had to be is a separate application module - because it can't be on the classpath at the same time as neo4j-graphql-java.
+2. The implementation we wound up with in the puzzlehunt-svc-neo4j-graphql module involved some custom work in the controller to generate Cypher queries that could be looked up by the CypherDataFetcher later. This meant we couldn't use the out-of-the-box controllers provided by graphql-java-spring even if they worked (well, maybe we could. If graphql-java-spring and neo4j-graphql-java didn't have their version incompatibility we could perhaps have done our extra work in a ControllerAdvice or Filter and still taken advantage of Spring's controller. Could be work looking into in the future).    
+
 
 # Musings on Neo4j
 
@@ -191,6 +206,10 @@ The best thing about Java 14 for this project was text blocks (still a preview f
 
 The worst thing is that IDEA apparently doesn't have preview enabled when using the "evaluate expression" command in the debugger, so if you used that command to execute code that contained a text block it would throw an exception.
 
+# Musings on architecture
+- Is the desire for a GraphQL API another good reason to have a "domain data service"? Previously I was pretty down on the concept unless you're really in a place where you need the layer of flexibility between your data model and your clients. But if you want a GraphQL API, where else would you put it?
+  - I guess just having a GraphQL API for a data domain doesn't mean that internal services using that data domain need to use it... I could see some kind of compromise here where services that occupy that data domain do their own database calls to avoid issues of performance/scalability, and because they're more likely owned by the same team and thus have fewer issues with data model compatibility. But maybe "casual" users of the data domain get their data through the GraphQL API? Possibly a slippery slope here because what is a "casual" user, but I could at least see this as a potential compromise.    
+
 # Getting started
 
 TODO: How to get the service and database up and running
@@ -238,6 +257,7 @@ TODO: Links to particularly useful docs/resources
   - Actually I think this isn't true. There's just some weirdness with IDEA attaching the Kotlin source in the debugger. The debugger shows the source files for some classes and decompiled code for others, but you can clearly find the source for everything if you browse the jars in the project window. 
 
 ## Research avenues to explore
+[graphql-spqr](https://github.com/leangen/GraphQL-SPQR) may be worth investigating for those with an already-existing Java model that they want to turn into a GraphQL API. It aims to solve the problem of these two things getting out of sync.
 
 ### GRANDstack
 
