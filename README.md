@@ -234,6 +234,27 @@ Two reasons we weren't able to use this library:
 
 The best thing about Java 14 for this project was text blocks (still a preview feature in Java 14). When Cypher queries were embedded in Java, we appreciated the readability of the triple double quote syntax for multi-line strings.
 
+```
+  @Query("""
+    match (hunt:Hunt)<-[played:PLAYED]-(team:Team)-[solved:SOLVED]->(puzzle:Puzzle)
+    with hunt.name as huntName, team, solved
+    where huntName = $huntName
+    call {
+      with huntName
+      match (hunt:Hunt)-[:HAS]->(puzzle:Puzzle)
+      where hunt.name = huntName
+      return count(puzzle) as totalPuzzles
+    }
+    return
+      team.name as name,
+      count(solved.end) = totalPuzzles as finished,
+      sum(solved.points) as score,
+      sum(duration.between(solved.start, solved.end)) as time
+    order by score desc
+    """)
+  List<TeamResult> getTeamResultsByHuntName(@Param("huntName") String huntName);
+```
+
 The worst thing is that IDEA apparently doesn't have preview enabled when using the "evaluate expression" command in the debugger, so if you used that command to execute code that contained a text block it would throw an exception.
 
 # Musings on architecture
