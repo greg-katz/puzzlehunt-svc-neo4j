@@ -129,8 +129,8 @@ TODO:
 - If you *don't* want to use GraphQL, Spring Data Neo4j is a good choice (you get CRUD for cheap)
 - Neo4j OGM doesn't seem to have a use case on its own (just use Spring Data Neo4j - it uses OGM under the hood)
 - GraphQL is cool! (cycles are solved; API design is fun)
-- GraphQL + Neo4j and automagic Cypher query generation
-- Neo4j's Java driver is a perfectly fine choice for certain use cases (if your whole world is made up of leaderboard-style queries, for example)
+- GraphQL + Neo4j and automagic Cypher query generation are a kind of "sweet spot" - by default, a GraphQL query is turned into a single Cypher query that resolves the entire requested object graph (meaning fewest possible trips to the database), while the option to plug in property resolvers is still available if the single query approach doesn't satisfy (when doing special processing of properties, or fetching properties from other data sources)
+- Neo4j's Java driver is a perfectly fine choice for certain use cases (if your whole world is made up of leaderboard-style queries, for example - "I have a gnarly Cypher query and I want to expose its results via a URL")
 
 TODO: GraphQL + Neo4j + autogeneration of a single Cipher query for each request + optional overriding of property fetching = seems like a powerful solution that covers a lot of bases
 
