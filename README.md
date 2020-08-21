@@ -158,7 +158,7 @@ OGM's "save" method takes some getting used to, and if you don't use it properly
 
 The key confusion is that when you save an object with OGM what it does is take the object graph that it's loaded in that session so far and compare it with the object graph you're passing in the save method, and then generate the Cypher queries necessary to transform the data from the former into the latter. But there are multiple pitfalls here.
 
-One is that if you haven't loaded all of the relavant object graph in the same session, OGM is unaware of the exact comparison and won't run the right queries. For example say I want to change the team's captain by setting the Team's Captain field to a new Person reference. If my session involves loading the Team with depth 0 so the old captain is not filled in, then loading the Person I want to be captain, then setting that Person on the Team's captain field and saving the Team, what will happen is I add a *second* Captain relationship to the new Person but the old captain relationship is not removed. Because the old captain wasn't loaded in that session OGM doesn't see that diff and doesn't know there's something to delete.
+One is that if you haven't loaded all of the relavant object graph in the same session, OGM is unaware of the exact comparison and won't run the right queries. For example say I want to change the team's captain by setting the Team's Captain field to a new Person reference. If my session involves loading the Team with depth 0 so the old captain is not filled in, then loading the Person I want to be captain, then setting that Person on the Team's captain field and saving the Team, what will happen is I add a *second* Captain relationship to the Team but the old captain relationship is not removed. Because the old captain wasn't loaded in that session OGM doesn't see that it was removed in the diff and doesn't know there's something to delete.
 
 In practice this kind of session-saving issue was a big pain when we were auto-resolving some entities in our Controller parameters and we wrote an [neo4jOgmSessionFilter](https://github.com/greg-katz/puzzlehunt-svc-neo4j/blob/master/puzzlehunt-svc-neo4j-springdata/src/main/java/com/horshers/puzzlehuntspringdata/config/FilterConfig.java) to solve that problem. See the big comment in that class for more details.
 
@@ -166,7 +166,13 @@ The second big confusion with OGM saving is when your objects have circular refe
 
 # Compared to REST, GraphQL is a breath of fresh air
 
-TODO
+We were skeptical at first but walked away as semi-converts. GraphQL solved some good problems:
+
+* Bidirectional relationships are totally fine in a GraphQL schema, yet there are no issues whatsoever with circular references (because the query specifies how far in the "cycle" to go).
+* A GraphQL API is specced to work one way. You will not fall into any hairy philosophy about what URLs and HTTP methods to use for your REST endpoints, when to nest dependent objects under their parent or promote them to the root, or fussing with weird POST endpoints where you pretend arbitrary actions (like "change player's team") make sense to represent as a document.
+* The GraphQL schema makes your API naturally discoverable. It was simple for us to host the GraphIQL code editor on an endpoint at our server to provide a query editing environment that is aware of our schema.
+* We have many thoughts of varying coherence on GraphQL performance below, but in the end our opinion is that if you're not being naive about it there's little reason to think GraphQL will be slower in the backend than a traditional REST style.
+* GraphQL will always give you the savings of only one round trip from the client to get data that is never underfetched or overfetched (at least from the perspective of the wire - whether you overfetch or underfetch when executing your queries in the backend is up to the server and a more complex issue, but still there's nothing about GraphQL that puts you in an inheriently stickier a situation there than a traditional REST API).
 
 # Learnings about libraries
 
